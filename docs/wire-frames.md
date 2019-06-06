@@ -1,7 +1,7 @@
 # Wire Frames
 
 * [User stories](user-stories.md)
-* [Wireframes](wire-frames.md)
+* [Home](https://achigbrow.github.io/kiddogo/)
 
 ![wireframe](wireframe.jpg)
 

@@ -1,6 +1,5 @@
 # Kiddo Go
 
-!(logo)[img/logo.jpg]
 
 * [User stories](docs/user-stories.md)
 * [Wireframes](docs/wire-frames.md)

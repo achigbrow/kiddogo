@@ -1,7 +1,7 @@
 # User Stories
 
-* [User stories](docs/user-stories.md)
-* [Wireframes](docs/wire-frames.md)
+* [User stories](user-stories.md)
+* [Wireframes](wire-frames.md)
 
 ## Parent User Stories
 As a parent of a young child, I want an app that will help me to provide structure, immediate  

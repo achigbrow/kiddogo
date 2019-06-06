@@ -1,3 +1,2 @@
 # Wire Frames
-
-![kiddo-go](assets/img/Kiddo-Go.png)
+![wireframe](assets/img/wireframe.jpg)

@@ -1,9 +1,14 @@
 # User Stories
 
 ## Parent User Stories
-* As a parent, I want the ability to enter my child's name so that they can see a customized good
-morning message (e.g. Good morning, Noam!) and so that the kiddo tab can be named with the child's 
-name.
+As a parent of a young child, I want an app that will help me to provide structure, immediate  
+feedback, and rewards to my child to encourage them to get dressed and ready for school in a 
+reasonable amount of time in the morning. I should be able to customize settings for days and time, 
+tasks, and timers. I should also be able to review my child's weekly and monthly progress.
+
+
+* As a parent, I want the ability to select what calendar date the app will begin and end the game 
+so that I can align it with the school year.
 
 * As a parent, I want to select the days of the week that I want this program to run so that I can 
 choose to run the program just during the school week or on weekends as well.
@@ -14,9 +19,6 @@ program will run so that my child can have more freedom during the holidays.
 * As a parent, I want the ability to set what time this program will run on the days selected to run
 so that it aligns with when my child will be waking up for school.
 
-* As a parent, I want to select from a list of tasks what should be included in my child needs to 
-complete each morning in order to get ready.
-
 * As a parent, I want the ability to set a timer for how long the child has to complete the task 
 sequence each morning so that my child is ready when it is time to leave.
 
@@ -24,6 +26,9 @@ sequence each morning so that my child is ready when it is time to leave.
 completing the tasks on time.
 
 ## Child User Stories
+As a child, I want an app that makes getting ready for school more fun. I want to know how I did and
+feel like I am racing with myself.
+
 
 * As a child, I want to see a greeting message and hear a good morning sound each morning to let me 
 know that it is time to begin.

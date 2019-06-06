@@ -1,7 +1,7 @@
 # Wire Frames
 
-* [User stories](docs/user-stories.md)
-* [Wireframes](docs/wire-frames.md)
+* [User stories](user-stories.md)
+* [Wireframes](wire-frames.md)
 
 ![wireframe](wireframe.jpg)
 

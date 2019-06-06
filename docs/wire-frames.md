@@ -1,3 +1,3 @@
 # Wire Frames
 
-[kiddo-go](assets/img/Kiddo-Go.png)
+![kiddo-go](assets/img/Kiddo-Go.png)

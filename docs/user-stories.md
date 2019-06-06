@@ -4,9 +4,9 @@
 * [Home](https://achigbrow.github.io/kiddogo/)
 
 ## Parent User Stories
-As a parent of a young child, I want an app that will help me to provide structure, immediate feedback, and rewards to my child to encourage them to get dressed and ready for school in a 
-reasonable amount of time in the morning. I should be able to customize settings for days and time, 
-tasks, and timers. I should also be able to review my child's weekly and monthly progress.
+As a parent of a young child, I want an app that will help me to provide structure, immediate  
+feedback, and rewards to my child to encourage them to get dressed and ready for school in a 
+reasonable amount of time in the morning. I should be able to customize settings for days, time, and timers. I should also be able to review my child's weekly and monthly progress.
 
 
 * As a parent, I want the ability to select what calendar date the app will begin and end the game 

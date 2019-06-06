@@ -1,2 +1,2 @@
 # Wire Frames
-![wireframe](assets/img/wireframe.jpg)
+![wireframe](/img/wireframe.jpg)

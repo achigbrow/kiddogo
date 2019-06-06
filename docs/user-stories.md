@@ -1,7 +1,7 @@
 # User Stories
 
-* [User stories](user-stories.md)
 * [Wireframes](wire-frames.md)
+* [Home](https://achigbrow.github.io/kiddogo/)
 
 ## Parent User Stories
 As a parent of a young child, I want an app that will help me to provide structure, immediate  

@@ -31,6 +31,8 @@ completing the tasks on time.
 As a child, I want an app that makes getting ready for school more fun. I want to know how I did and
 feel like I am racing with myself.
 
+* As a child, I want to hear and read my task instructions so that I know what I need to do.
+
 
 * As a child, I want to see a greeting message and hear a good morning sound each morning to let me 
 know that it is time to begin.

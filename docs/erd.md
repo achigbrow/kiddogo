@@ -1,2 +1,2 @@
-![relationships](kiddo-go-relationships.png)
+![relationships](erd.png)
 [Relationships PDF Link](kiddo-go-relationships.pdf)

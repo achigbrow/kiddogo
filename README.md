@@ -3,7 +3,7 @@
 
 * [User stories](docs/user-stories.md)
 * [Wireframes](docs/wire-frames.md)
-* [Entity Relationships](docs/kiddo-go-relationships.png)
+* [Entity Relationships](docs/kiddo-go-relationships.pdf)
 
 This app is a simple list of tasks that must be completed in a certain time on selected days. The 
 tasks will be displayed as individual pages and reward messages will play when the user completes 

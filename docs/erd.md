@@ -1,2 +1,2 @@
-![relationships](docs/kiddo-go-relationships.png)
-[Relationships PDF Link](docs/kiddo-go-relationships.pdf)
+![relationships](kiddo-go-relationships.png)
+[Relationships PDF Link](kiddo-go-relationships.pdf)

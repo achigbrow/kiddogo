@@ -4,10 +4,12 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
-import java.sql.Timestamp;
+import androidx.room.TypeConverters;
+import java.util.Date;
+
 
 @Entity(foreignKeys = {
-    @ForeignKey(entity = User.class, parentColumns = "id", childColumns = "user",
+    @ForeignKey(entity = User.class, parentColumns = "user_id", childColumns = "user_id",
         onDelete = ForeignKey.CASCADE)
     })
 
@@ -20,7 +22,8 @@ public class Activity {
   @ColumnInfo(name = "user_id", index = true)
   private long  user;
 
-  private Timestamp timestamp;
+  @TypeConverters(TimestampConverter.class)
+  private Date timestamp;
 
   private long time;
 
@@ -34,11 +37,11 @@ public class Activity {
     this.id = id;
   }
 
-  public Timestamp getTimestamp() {
+  public Date getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(Timestamp timestamp) {
+  public void setTimestamp(Date timestamp) {
     this.timestamp = timestamp;
   }
 

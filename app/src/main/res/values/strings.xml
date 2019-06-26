@@ -1,6 +1,15 @@
 <resources>
-  <string name="app_name">kiddogo</string>
-  <string name="title_home">Home</string>
+  <string name="app_name">Kiddo Go</string>
+  <string name="title_play">Play</string>
   <string name="title_dashboard">Dashboard</string>
+  <string name="title_settings">Settings</string>
+  <string name="user_name">Noam</string>
+  <string name="page_2_text">Brush your teeth.</string>
+  <string name="page_1_text">Get dressed.</string>
+  <string name="page_3_text">Make your bed.</string>
+  <string name="page_4_text">Put your shoes on.</string>
+  <string name="page_5_text">Get your backpack ready.</string>
+  <string name="title_activity_screen_pager">ScreenPagerActivity</string>
+  <string name="title_home">Home</string>
   <string name="title_notifications">Notifications</string>
 </resources>

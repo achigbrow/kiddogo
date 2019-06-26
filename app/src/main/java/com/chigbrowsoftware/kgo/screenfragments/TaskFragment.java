@@ -3,27 +3,35 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import com.chigbrowsoftware.kgo.R;
 
-public class FirstFragment extends Fragment {
+public class TaskFragment extends Fragment {
+
+  Button button1;
+  int done =0;
 
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_first, container, false);
+    View view = inflater.inflate(R.layout.fragment_task, container, false);
+
 
     TextView tv = view.findViewById(R.id.frag_1);
     tv.setText(getArguments().getString("msg"));
 
+    button1 = view.findViewById(R.id.button_1);
+    button1.setOnClickListener(view1 -> done += 1);
+
     return view;
   }
 
-  public static FirstFragment newInstance(String text) {
+  public static TaskFragment newInstance(String text) {
 
-    FirstFragment frag1 = new FirstFragment();
+    TaskFragment frag1 = new TaskFragment();
     Bundle bundle = new Bundle();
     bundle.putString("msg", text);
 

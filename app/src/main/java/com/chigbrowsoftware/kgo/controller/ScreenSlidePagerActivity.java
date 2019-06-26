@@ -5,14 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import com.chigbrowsoftware.kgo.R;
-import com.chigbrowsoftware.kgo.screenfragments.FirstFragment;
-import com.chigbrowsoftware.kgo.screenfragments.SecondFragment;
-import com.chigbrowsoftware.kgo.screenfragments.ThirdFragment;
+import com.chigbrowsoftware.kgo.screenfragments.TaskFragment;
 
 public class ScreenSlidePagerActivity extends FragmentActivity {
 
@@ -42,24 +38,30 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
   private class MyPagerAdapter extends FragmentStatePagerAdapter {
     public MyPagerAdapter(FragmentManager fm) {
       super(fm);
+
     }
+
 
     @Override
     public Fragment getItem(int pos) {
       switch (pos) {
 
-        case 0: return FirstFragment.newInstance("Get dressed.");
-        case 1: return SecondFragment.newInstance("Brush your teeth.");
-        case 2: return ThirdFragment.newInstance("Make your bed.");
-        case 3: return FirstFragment.newInstance("Put your shoes on.");
-        case 4: return SecondFragment.newInstance("Get your backpack ready.");
-        default: return ThirdFragment.newInstance("Good morning!");
+        case 0: return TaskFragment.newInstance("Get dressed.");
+        case 1: return TaskFragment.newInstance("Brush your teeth.");
+        case 2: return TaskFragment.newInstance("Make your bed.");
+        case 3: return TaskFragment.newInstance("Put your shoes on.");
+        case 4: return TaskFragment.newInstance("Get your backpack ready.");
+        default: return TaskFragment.newInstance("Good morning!");
       }
     }
+
+
 
     @Override
     public int getCount() {
       return NUM_PAGES;
     }
   }
+
+
 }

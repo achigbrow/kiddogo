@@ -15,9 +15,6 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-  private String user = "Noam";
-  private TextView userDisplay;
-  private ViewGroup userContainer;
 
   private Button btn;
 
@@ -56,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(pageViewer);
       }
     });
-//    userContainer = (ViewGroup) userDisplay.getParent();
     mTextMessage = findViewById(R.id.message);
     BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

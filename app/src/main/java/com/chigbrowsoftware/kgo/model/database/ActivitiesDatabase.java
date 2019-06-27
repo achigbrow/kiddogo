@@ -13,9 +13,9 @@ import java.util.Date;
 @Database(entities = {Activity.class, User.class}, version = 1)
 public abstract class ActivitiesDatabase extends RoomDatabase {
 
-  public abstract ActivityDao getActivityDao();
+  public abstract ActivityDao activityDao();
 
-  public abstract UserDao getUserDao();
+  public abstract UserDao userDao();
 
   private static ActivitiesDatabase INSTANCE;
 

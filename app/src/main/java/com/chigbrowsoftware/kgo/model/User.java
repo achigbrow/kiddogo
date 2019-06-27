@@ -1,8 +1,10 @@
 package com.chigbrowsoftware.kgo.model;
 
+import android.content.res.Resources;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.preference.PreferenceManager;
 
 @Entity
 public class User {
@@ -14,6 +16,7 @@ public class User {
   private String name;
 
   public long getId() {
+
     return id;
   }
 
@@ -22,6 +25,7 @@ public class User {
   }
 
   public String getName() {
+
     return name;
   }
 

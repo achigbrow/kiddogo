@@ -3,7 +3,7 @@
 
 * [User stories](docs/user-stories.md)
 * [Wireframes](docs/wire-frames.md)
-* [Entity Relationships](docs/erd3.pdf)
+* [Entity Relationships](docs/erd4.pdf)
 * [Mileston Summary](docs/milestone-2.md)
 
 This app is a simple list of tasks that must be completed in a certain time on selected days. The 

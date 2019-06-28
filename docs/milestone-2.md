@@ -1,4 +1,4 @@
-#Implementation Summary
+# Implementation Summary
 
 The current implementation of Kiddo Go contains:
 * an Activities Database, User entity, and Activity entity.

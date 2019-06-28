@@ -20,12 +20,17 @@ system.
 
 
 ## External Connections
-I intend to use IBM Watson api to translate text to speech so that the tasks can be verbalized for 
+~~I intend to use IBM Watson api to translate text to speech so that the tasks can be verbalized for 
 kids who are not yet reading. I will also use Google calendar api for US holidays and (if I am able)
-to pull a monthly calendar view onto the screen.
+to pull a monthly calendar view onto the screen.~~
+
+### Updated External Connections
+The IBM Watson dependencies did not play well with androidx, so I am using the android class built for the purpose of text to speech.
+I am changing the connection to Google Calendar. Now, Kiddo Go will push a calendar notification to the parent when the child completes,
+or fails to complete, the tasks on time.
 
 ## Persistent Data
 Persistent data for the app will include the settings selected by the parent to establish timing, 
-tasks, and rewards and the child's record going back one month. 
+tasks, and the child's record going back one month. 
 
 Primary navigation will be bottom buttons and tapping/swiping between completed tasks. 

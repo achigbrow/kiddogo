@@ -1,10 +1,13 @@
 package com.chigbrowsoftware.kgo.model;
 
 import android.content.res.Resources;
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.preference.PreferenceManager;
+import androidx.room.TypeConverter;
+import java.util.jar.Attributes.Name;
 
 @Entity
 public class User {
@@ -31,5 +34,12 @@ public class User {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+
+  @NonNull
+  @Override
+  public String toString() {
+    return name;
   }
 }

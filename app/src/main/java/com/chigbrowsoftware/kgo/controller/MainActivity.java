@@ -10,11 +10,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
 import com.chigbrowsoftware.kgo.R;
 import com.chigbrowsoftware.kgo.model.User;
+import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
 import com.chigbrowsoftware.kgo.viewmodel.UserViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   private SharedPreferences preferences;
   private String userName;
   private int timeLimit;
+  private User user;
 
 
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -59,16 +62,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    btn = findViewById(R.id.button);
-    btn.setText("Noam");
-    btn.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        Intent pageViewer =
-            new Intent(MainActivity.this, ScreenSlidePagerActivity.class);
-        startActivity(pageViewer);
-      }
-    });
+    getUser(1L).observe(this, this::buildButton);
+   // buildButton();
     mTextMessage = findViewById(R.id.message);
     preferences = PreferenceManager.getDefaultSharedPreferences(this);
     preferences.registerOnSharedPreferenceChangeListener(this);
@@ -85,10 +80,36 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     Resources res = getResources();
     userName = preferences.getString("username", "username");
     timeLimit = preferences.getInt("timer", 15);
+  }
+
+  private void setUserNameAndAdd() {
     UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-    User user = new User();
+    user = new User();
     user.setName(userName);
     userViewModel.addUser(user);
+  }
+
+  //TODO Build the ability to create 4 buttons of different colors for up to 4 users added.
+  //TODO Tie the button opened activity to the user.
+  private void buildButton(User user) {
+    if (user != null) {
+      btn = findViewById(R.id.button);
+      btn.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          Intent pageViewer =
+              new Intent(MainActivity.this, ScreenSlidePagerActivity.class);
+          startActivity(pageViewer);
+        }
+      });
+      //LiveData<User> name = getUser(0L);
+      btn.setText(user.getName());
+    }
+  }
+
+  private LiveData<User> getUser(Long id) {
+    ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
+    return db.userDao().findById(id);
   }
 
 

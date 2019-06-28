@@ -2,6 +2,7 @@ package com.chigbrowsoftware.kgo.model.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import com.chigbrowsoftware.kgo.model.User;
@@ -15,5 +16,11 @@ public interface UserDao {
 
   @Query("SELECT * FROM user")
   LiveData<List<User>> getAll();
+
+  @Query("SELECT * FROM user WHERE user_id = :id")
+  LiveData<User> findById(Long id);
+
+  @Delete
+  int delete(User... user);
 
 }

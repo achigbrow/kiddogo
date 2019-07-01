@@ -47,7 +47,7 @@ public abstract class ActivitiesDatabase extends RoomDatabase {
     @Override
     protected Void doInBackground(Void... voids) {
       User user1 = new User();
-      user1.setName("Noam");
+      user1.setName("User Name");
       db.userDao().insert(user1);
       return null;
     }

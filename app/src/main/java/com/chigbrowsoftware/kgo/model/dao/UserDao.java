@@ -20,6 +20,11 @@ public interface UserDao {
   @Query("SELECT * FROM user WHERE user_id = :id")
   LiveData<User> findById(Long id);
 
+  @Query("SELECT user_id, MAX(user_id) as maxId FROM user")
+  long getMaxId();
+
+
+
   @Delete
   int delete(User... user);
 

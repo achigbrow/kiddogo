@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   private String userName;
   private int timeLimit;
   private User user;
+  //private long maxId;
 
 
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -78,16 +79,18 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
   private void readSettings() {
     Resources res = getResources();
-    userName = preferences.getString("username", "username");
+    userName = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+        .getString("username", "default username");
+    //userName = preferences.getString("username", "username");
     timeLimit = preferences.getInt("timer", 15);
-  }
-
-  private void setUserNameAndAdd() {
     UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
     user = new User();
     user.setName(userName);
     userViewModel.addUser(user);
+    userViewModel.getRecentUser();
+    btn.setText(user.getName());
   }
+
 
   //TODO Build the ability to create 4 buttons of different colors for up to 4 users added.
   //TODO Tie the button opened activity to the user.
@@ -106,6 +109,13 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
       btn.setText(user.getName());
     }
   }
+
+//  private long  getMaxId() {
+//    ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
+//    maxId = db.userDao().getMaxId();
+//
+//    return maxId;
+//  }
 
   private LiveData<User> getUser(Long id) {
     ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());

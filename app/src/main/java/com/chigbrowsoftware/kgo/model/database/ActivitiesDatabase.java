@@ -7,13 +7,12 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-import com.chigbrowsoftware.kgo.model.Activity;
-import com.chigbrowsoftware.kgo.model.User;
+import com.chigbrowsoftware.kgo.model.entity.ActivityEntity;
+import com.chigbrowsoftware.kgo.model.entity.UserEntity;
 import com.chigbrowsoftware.kgo.model.dao.ActivityDao;
 import com.chigbrowsoftware.kgo.model.dao.UserDao;
-import java.util.Date;
 
-@Database(entities = {Activity.class, User.class}, version = 1)
+@Database(entities = {ActivityEntity.class, UserEntity.class}, version = 1)
 public abstract class ActivitiesDatabase extends RoomDatabase {
 
   public abstract ActivityDao activityDao();
@@ -46,8 +45,8 @@ public abstract class ActivitiesDatabase extends RoomDatabase {
 
     @Override
     protected Void doInBackground(Void... voids) {
-      User user1 = new User();
-      user1.setName("User Name");
+      UserEntity user1 = new UserEntity();
+      user1.setName("UserEntity Name");
       db.userDao().insert(user1);
       return null;
     }

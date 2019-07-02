@@ -1,4 +1,4 @@
-package com.chigbrowsoftware.kgo.model;
+package com.chigbrowsoftware.kgo.model.database;
 
 import androidx.room.TypeConverter;
 import java.util.Date;

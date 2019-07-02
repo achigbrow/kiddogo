@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-import com.chigbrowsoftware.kgo.model.Activity;
+import com.chigbrowsoftware.kgo.model.entity.ActivityEntity;
 import java.util.List;
 
 
@@ -12,9 +12,9 @@ import java.util.List;
 public interface ActivityDao {
 
   @Insert
-  long insert(Activity activity);
+  long insert(ActivityEntity activity);
 
-  @Query("SELECT * FROM activity")
-  LiveData<List<Activity>> getAll();
+  @Query("SELECT * FROM ActivityEntity")
+  LiveData<List<ActivityEntity>> getAll();
 
 }

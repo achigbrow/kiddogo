@@ -8,4 +8,11 @@
     <item name="colorAccent">@color/colorPurple</item>
   </style>
 
+  <style name="ClockDisplay" parent="AppTheme">
+    <item name="android:textColor">@color/colorPurple</item>
+    <item name="android:textSize">28sp</item>
+    <item name="android:includeFontPadding">false</item>
+    <item name="android:padding">4dp</item>
+  </style>
+
 </resources>

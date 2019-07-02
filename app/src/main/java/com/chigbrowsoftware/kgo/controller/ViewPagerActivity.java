@@ -6,15 +6,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import com.chigbrowsoftware.kgo.R;
-import com.chigbrowsoftware.kgo.screenfragments.TaskFragment;
+import com.chigbrowsoftware.kgo.fragments.TaskFragment;
 
-public class ScreenSlidePagerActivity extends FragmentActivity {
+public class ViewPagerActivity extends FragmentActivity {
 
-  private final static int NUM_PAGES = 5;
+  public final static int NUM_PAGES = 5;
 
-  private ViewPager pager;
+  public static androidx.viewpager.widget.ViewPager pager;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,7 +40,7 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
 
     }
 
-
+//TODO Add Result fragment as case 5.
     @Override
     public Fragment getItem(int pos) {
       switch (pos) {

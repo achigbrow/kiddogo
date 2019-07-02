@@ -20,7 +20,7 @@
       </intent-filter>
     </activity>
     <activity
-      android:name=".controller.ScreenSlidePagerActivity"
+      android:name=".controller.ViewPagerActivity"
       android:label="@string/title_activity_screen_pager"/>
     <activity
       android:label="Settings"

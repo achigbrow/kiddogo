@@ -1,4 +1,4 @@
-package com.chigbrowsoftware.kgo.model;
+package com.chigbrowsoftware.kgo.model.entity;
 
 import android.content.res.Resources;
 import androidx.annotation.NonNull;
@@ -10,7 +10,7 @@ import androidx.room.TypeConverter;
 import java.util.jar.Attributes.Name;
 
 @Entity
-public class User {
+public class UserEntity {
 
   @PrimaryKey(autoGenerate = true)
   @ColumnInfo(name = "user_id")

@@ -7,21 +7,22 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
 import com.chigbrowsoftware.kgo.R;
-import com.chigbrowsoftware.kgo.model.User;
+import com.chigbrowsoftware.kgo.model.Activity;
+import com.chigbrowsoftware.kgo.model.entity.UserEntity;
 import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
-import com.chigbrowsoftware.kgo.viewmodel.UserViewModel;
+import com.chigbrowsoftware.kgo.model.viewmodel.UserViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
 
@@ -30,11 +31,19 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
   private TextView mTextMessage;
   private SharedPreferences preferences;
-  private String userName;
   private int timeLimit;
-  private User user;
-  //private long maxId;
+  private UserEntity user;
+  private long userId;
+  private Activity activity;
 
+
+  private TextView clockDisplay;
+  private Timer activityTimer;
+  private Timer clockTimer;
+  private String activityTimeElapsedKey;
+  private String clockFormat;
+  private long activityTimerStart;
+  private long activityTimeElapsed;
 
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
       = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -63,11 +72,13 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    getUser(1L).observe(this, this::buildButton);
-   // buildButton();
+    clockDisplay = findViewById(R.id.clock_display);
+    getUser().observe(this, this::buildButton);
     mTextMessage = findViewById(R.id.message);
     preferences = PreferenceManager.getDefaultSharedPreferences(this);
     preferences.registerOnSharedPreferenceChangeListener(this);
+    activityTimeElapsedKey = getString(R.string.activity_time_elapsed_key);
+    clockFormat = getString(R.string.clock_format);
     BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
   }
@@ -79,48 +90,79 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
   private void readSettings() {
     Resources res = getResources();
-    userName = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+    String userName = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
         .getString("username", "default username");
     //userName = preferences.getString("username", "username");
     timeLimit = preferences.getInt("timer", 15);
     UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-    user = new User();
+    user = new UserEntity();
     user.setName(userName);
     userViewModel.addUser(user);
-    userViewModel.getRecentUser();
+    userId = user.getId();
     btn.setText(user.getName());
   }
 
 
   //TODO Build the ability to create 4 buttons of different colors for up to 4 users added.
   //TODO Tie the button opened activity to the user.
-  private void buildButton(User user) {
+  private void buildButton(UserEntity user) {
     if (user != null) {
       btn = findViewById(R.id.button);
       btn.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
           Intent pageViewer =
-              new Intent(MainActivity.this, ScreenSlidePagerActivity.class);
+              new Intent(MainActivity.this, ViewPagerActivity.class);
           startActivity(pageViewer);
         }
       });
-      //LiveData<User> name = getUser(0L);
       btn.setText(user.getName());
     }
   }
 
-//  private long  getMaxId() {
-//    ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
-//    maxId = db.userDao().getMaxId();
-//
-//    return maxId;
-//  }
-
-  private LiveData<User> getUser(Long id) {
+  private LiveData<UserEntity> getUser() {
     ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
-    return db.userDao().findById(id);
+    return db.userDao().getLastUser();
   }
 
+  private void initActivity() {
+    activity = new Activity(userId, timeLimit);
+    activityTimeElapsed = 0;
+    activityTimerStart = System.currentTimeMillis();
+    updateClock();
+  }
+
+  //TODO create a timeout task and tie to activity timer
+  private void startActivityTimer() {
+    activityTimer = new Timer();
+    activityTimerStart = System.currentTimeMillis();
+    clockTimer = new Timer();
+    clockTimer.schedule(new ClockTimerTask(), 0, 100);
+  }
+
+  private class ClockTimerTask extends TimerTask {
+
+    @Override
+    public void run() {
+      runOnUiThread(() -> updateClock());
+    }
+
+  }
+
+    private void  updateClock() {
+
+      long remaining = (timeLimit * 60000) - (System.currentTimeMillis() - activityTimerStart);
+      int minutes;
+      double seconds;
+
+      if (remaining > 0) {
+        minutes = (int) (remaining/60000);
+        seconds = (remaining % 60000) / 1000.0;
+    } else {
+        minutes = 0;
+        seconds = 0;
+      }
+      clockDisplay.setText(String.format(clockFormat, minutes, seconds));
+  }
 
 }

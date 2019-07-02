@@ -9,6 +9,14 @@
   android:background="@color/colorWhite"
   tools:context=".controller.MainActivity">
 
+  <TextView
+    android:id="@+id/clock_display"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    style="@style/ClockDisplay"/>
+
   <FrameLayout
     android:id="@+id/task"
     android:layout_width="match_parent"

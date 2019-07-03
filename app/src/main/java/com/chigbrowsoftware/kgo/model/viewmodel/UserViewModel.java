@@ -4,28 +4,31 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import com.chigbrowsoftware.kgo.model.entity.UserEntity;
 import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
-import com.chigbrowsoftware.kgo.model.entity.ActivityEntity;
 import java.util.List;
 
-public class ActivityViewModel extends AndroidViewModel {
+public class UserViewModel extends AndroidViewModel {
 
-  private LiveData<List<ActivityEntity>> activities;
+  private final LiveData<List<UserEntity>> users;
 
-  public ActivityViewModel(@NonNull Application application) {
+  public UserViewModel(@NonNull Application application) {
     super(application);
     ActivitiesDatabase db = ActivitiesDatabase.getInstance(application);
-    activities = db.activityDao().getAll();
+    users = db.userDao().getAll();
   }
 
-  public LiveData<List<ActivityEntity>> getActivities() {
-    return activities;
+  public LiveData<List<UserEntity>> getUsersLiveData() {
+    return users;
   }
 
-  public void addActivity(final ActivityEntity activity) {
+  public void addUser(final UserEntity user) {
     new Thread((Runnable) () -> {
       ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
-      db.activityDao().insert(activity);
+      db.userDao().insert(user);
     }).start();
   }
+
+
+
 }

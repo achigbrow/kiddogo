@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <androidx.preference.EditTextPreference
+    android:title="Kiddo's Name"
+    android:key="username"
+    android:summary="Please enter your kiddo's name."/>
+
+  <androidx.preference.EditTextPreference
+    android:title="Your Gmail address."
+    android:key="email"
+    android:summary="Please enter your email address so that you can receive notifications of when
+your kiddo completes the tasks on time."/>
+
+  <androidx.preference.SeekBarPreference
+    android:title="Timer"
+    android:key="timer"
+    android:summary="How long do they have to get ready in the morning?"
+    android:max="30"
+    android:defaultValue="15"/>
+
+</androidx.preference.PreferenceScreen>

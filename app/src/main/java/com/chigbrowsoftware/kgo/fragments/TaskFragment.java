@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import com.chigbrowsoftware.kgo.R;
+import com.chigbrowsoftware.kgo.controller.MainActivity;
 import com.chigbrowsoftware.kgo.controller.ViewPagerActivity;
 
 public class TaskFragment extends Fragment {
@@ -16,13 +17,10 @@ public class TaskFragment extends Fragment {
   Button button1;
   public static int done =0;
 
-  //TODO Start timer fragment.
-
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_task, container, false);
-
 
     TextView tv = view.findViewById(R.id.frag_1);
     tv.setText(getArguments().getString("msg"));

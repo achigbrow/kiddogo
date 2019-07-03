@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   private Activity activity;
 
 
-  private TextView clockDisplay;
+  private static TextView clockDisplay;
   private Timer activityTimer;
   private Timer clockTimer;
   private String activityTimeElapsedKey;
@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
           Intent pageViewer =
               new Intent(MainActivity.this, ViewPagerActivity.class);
           startActivity(pageViewer);
+          initActivity();
         }
       });
       btn.setText(user.getName());
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     activity = new Activity(userId, timeLimit);
     activityTimeElapsed = 0;
     activityTimerStart = System.currentTimeMillis();
+    startActivityTimer();
     updateClock();
   }
 
@@ -144,13 +146,13 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
     @Override
     public void run() {
-      runOnUiThread(() -> updateClock());
+      runOnUiThread(() -> MainActivity.this.updateClock());
     }
 
   }
 
     private void  updateClock() {
-
+      timeLimit = preferences.getInt("timer", 15);
       long remaining = (timeLimit * 60000) - (System.currentTimeMillis() - activityTimerStart);
       int minutes;
       double seconds;
@@ -159,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         minutes = (int) (remaining/60000);
         seconds = (remaining % 60000) / 1000.0;
     } else {
-        minutes = 0;
+        minutes = timeLimit;
         seconds = 0;
       }
       clockDisplay.setText(String.format(clockFormat, minutes, seconds));

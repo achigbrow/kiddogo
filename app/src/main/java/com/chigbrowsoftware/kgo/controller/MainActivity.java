@@ -9,10 +9,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
 import com.chigbrowsoftware.kgo.R;
+import com.chigbrowsoftware.kgo.fragments.TaskFragment;
 import com.chigbrowsoftware.kgo.model.Activity;
 import com.chigbrowsoftware.kgo.model.entity.UserEntity;
 import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
@@ -44,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   private String clockFormat;
   private long activityTimerStart;
   private long activityTimeElapsed;
+
+  public final static int NUM_PAGES = 5;
+  public static androidx.viewpager.widget.ViewPager pager;
 
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
       = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -111,9 +118,9 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
       btn.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          Intent pageViewer =
-              new Intent(MainActivity.this, ViewPagerActivity.class);
-          startActivity(pageViewer);
+          setContentView(R.layout.activity_screen_slide);
+          pager = findViewById(R.id.viewPager);
+          pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
           initActivity();
         }
       });
@@ -151,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
   }
 
-    private void  updateClock() {
+    public void  updateClock() {
       timeLimit = preferences.getInt("timer", 15);
       long remaining = (timeLimit * 60000) - (System.currentTimeMillis() - activityTimerStart);
       int minutes;
@@ -166,5 +173,44 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
       }
       clockDisplay.setText(String.format(clockFormat, minutes, seconds));
   }
+  @Override
+  public void onBackPressed() {
+    if (pager.getCurrentItem() == 0) {
+      super.onBackPressed();
+    }else {
+      pager.setCurrentItem(pager.getCurrentItem()-1);
+    }
+  }
+
+  private class MyPagerAdapter extends FragmentStatePagerAdapter {
+    public MyPagerAdapter(FragmentManager fm) {
+      super(fm);
+      clockDisplay = findViewById(R.id.clock_display);
+      clockFormat = getString(R.string.clock_format);
+
+
+    }
+
+    //TODO Add Result fragment as case 5.
+    @Override
+    public Fragment getItem(int pos) {
+      switch (pos) {
+        case 0: return TaskFragment.newInstance("Get dressed.");
+        case 1: return TaskFragment.newInstance("Brush your teeth.");
+        case 2: return TaskFragment.newInstance("Make your bed.");
+        case 3: return TaskFragment.newInstance("Put your shoes on.");
+        case 4: return TaskFragment.newInstance("Get your backpack ready.");
+        default: return TaskFragment.newInstance("Good morning!");
+      }
+    }
+
+
+
+    @Override
+    public int getCount() {
+      return NUM_PAGES;
+    }
+  }
+
 
 }

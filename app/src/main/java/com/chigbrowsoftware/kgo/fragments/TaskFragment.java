@@ -1,9 +1,7 @@
 package com.chigbrowsoftware.kgo.fragments;
+
 import static com.chigbrowsoftware.kgo.controller.MainActivity.pager;
 
-
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +9,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
-import com.chigbrowsoftware.kgo.PreferenceUtil;
 import com.chigbrowsoftware.kgo.R;
 import com.chigbrowsoftware.kgo.controller.MainActivity;
-import com.chigbrowsoftware.kgo.model.entity.UserEntity;
-import com.chigbrowsoftware.kgo.model.viewmodel.UserViewModel;
+import com.chigbrowsoftware.kgo.model.Activity;
 import java.util.Timer;
 import java.util.TimerTask;
+
+//import com.chigbrowsoftware.kgo.PreferenceUtil;
 
 public class TaskFragment extends Fragment {
 
@@ -34,8 +31,8 @@ public class TaskFragment extends Fragment {
   private long activityTimerStart;
   private long activityTimeElapsed;
 
-  private MainActivity main;
   private int timeLimit;
+
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,22 +42,21 @@ public class TaskFragment extends Fragment {
     TextView tv = view.findViewById(R.id.frag_1);
     tv.setText(getArguments().getString("msg"));
 
+
     clockDisplay = view.findViewById(R.id.clock_display);
     activityTimeElapsedKey = getString(R.string.activity_time_elapsed_key);
     clockFormat = getString(R.string.clock_format);
     activityTimeElapsed = 0;
     activityTimerStart = System.currentTimeMillis();
     startActivityTimer();
-    main.updateClock();
+    initActivity();
+    updateClock();
 
     button1 = view.findViewById(R.id.button_1);
     button1.setOnClickListener(view1 -> {
       pager.setCurrentItem(getNextPossibleItemIndex(1), true);
       done += 1;
     });
-
-//    button1 = view.findViewById(R.id.button_1);
-//    button1.setOnClickListener(view1 -> done += 1);
 
     return view;
   }
@@ -91,18 +87,27 @@ public class TaskFragment extends Fragment {
 
     @Override
     public void run() {
-      getActivity().runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          main.updateClock();
-        }
-      });
-
+      if (getActivity() != null) {
+        getActivity().runOnUiThread(() -> updateClock());
+      }
     }
   }
 
+    public void updateClock() {
+      timeLimit = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("timer", 15);
+      long remaining = (timeLimit * 60000) - (System.currentTimeMillis() - activityTimerStart);
+      int minutes;
+      double seconds;
 
-
+      if (remaining > 0) {
+        minutes = (int) (remaining / 60000);
+        seconds = (remaining % 60000) / 1000.0;
+      } else {
+        minutes = timeLimit;
+        seconds = 0;
+      }
+      clockDisplay.setText(String.format(clockFormat, minutes, seconds));
+    }
 
     //TODO create a timeout task and tie to activity timer
     private void startActivityTimer() {
@@ -110,7 +115,16 @@ public class TaskFragment extends Fragment {
       activityTimerStart = System.currentTimeMillis();
       clockTimer = new Timer();
       clockTimer.schedule(new ClockTimerTask(), 0, 100);
+      updateClock();
     }
+
+  private void initActivity() {
+    activityTimeElapsed = 0;
+    activityTimerStart = System.currentTimeMillis();
+    startActivityTimer();
+    updateClock();
+  }
 
 
   }
+

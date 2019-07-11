@@ -8,6 +8,8 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SeekBarPreference;
 import com.chigbrowsoftware.kgo.R;
 
+
+
 //TODO Add ability to enter up to 4 users.
 
 public class SettingsActivity extends AppCompatActivity {

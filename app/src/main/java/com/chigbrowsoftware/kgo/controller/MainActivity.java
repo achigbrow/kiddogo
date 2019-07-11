@@ -31,18 +31,15 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
 
 
+  public final static int NUM_PAGES = 5;
+  public static androidx.viewpager.widget.ViewPager pager;
   private Button btn;
-
   private TextView mTextMessage;
   private SharedPreferences preferences;
   private int timeLimit;
   private UserEntity user;
   private long userId;
   private Activity activity;
-
-  public final static int NUM_PAGES = 5;
-  public static androidx.viewpager.widget.ViewPager pager;
-
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
       = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -129,26 +126,34 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     if (pager.getCurrentItem() == 0) {
       Intent intent = new Intent(this, MainActivity.class);
       startActivity(intent);
-    }else {
-      pager.setCurrentItem(pager.getCurrentItem()-1);
+    } else {
+      pager.setCurrentItem(pager.getCurrentItem() - 1);
     }
   }
 
   private class MyPagerAdapter extends FragmentStatePagerAdapter {
+
     public MyPagerAdapter(FragmentManager fm) {
       super(fm);
     }
+
 
     //TODO Add Result fragment as case 5.
     @Override
     public Fragment getItem(int pos) {
       switch (pos) {
-        case 0: return TaskFragment.newInstance("Get dressed.");
-        case 1: return TaskFragment.newInstance("Brush your teeth.");
-        case 2: return TaskFragment.newInstance("Make your bed.");
-        case 3: return TaskFragment.newInstance("Put your shoes on.");
-        case 4: return TaskFragment.newInstance("Get your backpack ready.");
-        default: return TaskFragment.newInstance("Good morning!");
+        case 0:
+          return TaskFragment.newInstance("Get dressed.");
+        case 1:
+          return TaskFragment.newInstance("Brush your teeth.");
+        case 2:
+          return TaskFragment.newInstance("Make your bed.");
+        case 3:
+          return TaskFragment.newInstance("Put your shoes on.");
+        case 4:
+          return TaskFragment.newInstance("Get your backpack ready.");
+        default:
+          return TaskFragment.newInstance("Good morning!");
       }
     }
 

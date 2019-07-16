@@ -9,14 +9,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
 import com.chigbrowsoftware.kgo.R;
-import com.chigbrowsoftware.kgo.fragments.TaskFragment;
 import com.chigbrowsoftware.kgo.model.Activity;
 import com.chigbrowsoftware.kgo.model.entity.UserEntity;
 import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
@@ -31,15 +27,24 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
 
 
-  public final static int NUM_PAGES = 5;
-  public static androidx.viewpager.widget.ViewPager pager;
   private Button btn;
+
   private TextView mTextMessage;
   private SharedPreferences preferences;
   private int timeLimit;
   private UserEntity user;
   private long userId;
   private Activity activity;
+
+
+  private static TextView clockDisplay;
+  private Timer activityTimer;
+  private Timer clockTimer;
+  private String activityTimeElapsedKey;
+  private String clockFormat;
+  private long activityTimerStart;
+  private long activityTimeElapsed;
+
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
       = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -67,10 +72,13 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    clockDisplay = findViewById(R.id.clock_display);
     getUser().observe(this, this::buildButton);
     mTextMessage = findViewById(R.id.message);
     preferences = PreferenceManager.getDefaultSharedPreferences(this);
     preferences.registerOnSharedPreferenceChangeListener(this);
+    activityTimeElapsedKey = getString(R.string.activity_time_elapsed_key);
+    clockFormat = getString(R.string.clock_format);
     BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
   }
@@ -84,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     Resources res = getResources();
     String userName = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
         .getString("username", "default username");
+    //userName = preferences.getString("username", "username");
     timeLimit = preferences.getInt("timer", 15);
     UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
     user = new UserEntity();
@@ -102,9 +111,9 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
       btn.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          setContentView(R.layout.activity_screen_slide);
-          pager = findViewById(R.id.viewPager);
-          pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+          Intent pageViewer =
+              new Intent(MainActivity.this, ViewPagerActivity.class);
+          startActivity(pageViewer);
           initActivity();
         }
       });
@@ -119,49 +128,43 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
   private void initActivity() {
     activity = new Activity(userId, timeLimit);
+    activityTimeElapsed = 0;
+    activityTimerStart = System.currentTimeMillis();
+    startActivityTimer();
+    updateClock();
   }
 
-  @Override
-  public void onBackPressed() {
-    if (pager.getCurrentItem() == 0) {
-      Intent intent = new Intent(this, MainActivity.class);
-      startActivity(intent);
+  //TODO create a timeout task and tie to activity timer
+  private void startActivityTimer() {
+    activityTimer = new Timer();
+    activityTimerStart = System.currentTimeMillis();
+    clockTimer = new Timer();
+    clockTimer.schedule(new ClockTimerTask(), 0, 100);
+  }
+
+  private class ClockTimerTask extends TimerTask {
+
+    @Override
+    public void run() {
+      runOnUiThread(() -> MainActivity.this.updateClock());
+    }
+
+  }
+
+    private void  updateClock() {
+      timeLimit = preferences.getInt("timer", 15);
+      long remaining = (timeLimit * 60000) - (System.currentTimeMillis() - activityTimerStart);
+      int minutes;
+      double seconds;
+
+      if (remaining > 0) {
+        minutes = (int) (remaining/60000);
+        seconds = (remaining % 60000) / 1000.0;
     } else {
-      pager.setCurrentItem(pager.getCurrentItem() - 1);
-    }
-  }
-
-  private class MyPagerAdapter extends FragmentStatePagerAdapter {
-
-    public MyPagerAdapter(FragmentManager fm) {
-      super(fm);
-    }
-
-
-    //TODO Add Result fragment as case 5.
-    @Override
-    public Fragment getItem(int pos) {
-      switch (pos) {
-        case 0:
-          return TaskFragment.newInstance("Get dressed.");
-        case 1:
-          return TaskFragment.newInstance("Brush your teeth.");
-        case 2:
-          return TaskFragment.newInstance("Make your bed.");
-        case 3:
-          return TaskFragment.newInstance("Put your shoes on.");
-        case 4:
-          return TaskFragment.newInstance("Get your backpack ready.");
-        default:
-          return TaskFragment.newInstance("Good morning!");
+        minutes = timeLimit;
+        seconds = 0;
       }
-    }
-
-    @Override
-    public int getCount() {
-      return NUM_PAGES;
-    }
+      clockDisplay.setText(String.format(clockFormat, minutes, seconds));
   }
-
 
 }

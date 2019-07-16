@@ -16,24 +16,14 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     android:visibility="visible"
-    android:backgroundTint="@color/colorWhite"
-    android:textColor="@color/colorPurple"
     style="@style/ClockDisplay"/>
 
-  <androidx.viewpager.widget.ViewPager
-    android:id="@+id/viewPager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/clock_display"/>
-
-  <!--    Button does not show up without FrameLayout. I don't know why.-->
   <FrameLayout
     android:id="@+id/task"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    app:layout_constraintTop_toBottomOf="@id/clock_display">
 
     <Button
       android:id="@+id/button"
@@ -42,7 +32,6 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center|center"
       android:visibility="visible"/>
-
   </FrameLayout>
 
   <com.google.android.material.bottomnavigation.BottomNavigationView

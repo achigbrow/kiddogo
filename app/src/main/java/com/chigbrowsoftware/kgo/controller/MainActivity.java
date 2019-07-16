@@ -9,10 +9,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
 import com.chigbrowsoftware.kgo.R;
+import com.chigbrowsoftware.kgo.fragments.CompleteFragment;
+import com.chigbrowsoftware.kgo.fragments.TaskFragment;
 import com.chigbrowsoftware.kgo.model.Activity;
 import com.chigbrowsoftware.kgo.model.entity.UserEntity;
 import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
@@ -45,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   private long activityTimerStart;
   private long activityTimeElapsed;
 
+  public final static int NUM_PAGES = 5;
+  public static androidx.viewpager.widget.ViewPager pager;
+
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
       = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -55,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
       switch (item.getItemId()) {
         case R.id.navigation_play:
+          intent = new Intent(getApplicationContext(), MainActivity.class);
+          startActivity(intent);
           return true;
         case R.id.navigation_dashboard:
           mTextMessage.setText(R.string.title_dashboard);
@@ -111,60 +123,122 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
       btn.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          Intent pageViewer =
-              new Intent(MainActivity.this, ViewPagerActivity.class);
-          startActivity(pageViewer);
+         // setContentView(R.layout.activity_main);
+          btn.setVisibility(View.INVISIBLE);
+          pager = findViewById(R.id.viewPager);
+          pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
           initActivity();
         }
+
       });
       btn.setText(user.getName());
     }
   }
 
-  private LiveData<UserEntity> getUser() {
-    ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
-    return db.userDao().getLastUser();
+  public void stopActivityTimer() {
+    if (activityTimer != null) {
+      activityTimer.cancel();
+      activityTimer = null;
+      activityTimeElapsed += System.currentTimeMillis() - activityTimerStart;
+    }
   }
 
-  private void initActivity() {
-    activity = new Activity(userId, timeLimit);
-    activityTimeElapsed = 0;
-    activityTimerStart = System.currentTimeMillis();
-    startActivityTimer();
-    updateClock();
+  public void stopClockTimer(){
+    if (clockTimer != null) {
+      clockTimer.cancel();
+      clockTimer = null;
+    }
   }
 
-  //TODO create a timeout task and tie to activity timer
-  private void startActivityTimer() {
-    activityTimer = new Timer();
-    activityTimerStart = System.currentTimeMillis();
-    clockTimer = new Timer();
-    clockTimer.schedule(new ClockTimerTask(), 0, 100);
-  }
-
-  private class ClockTimerTask extends TimerTask {
-
-    @Override
-    public void run() {
-      runOnUiThread(() -> MainActivity.this.updateClock());
+    private LiveData<UserEntity> getUser () {
+      ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
+      return db.userDao().getLastUser();
     }
 
-  }
+    private void initActivity () {
+      activity = new Activity(userId, timeLimit);
+      activityTimeElapsed = 0;
+      activityTimerStart = System.currentTimeMillis();
+      startActivityTimer();
+      updateClock();
+    }
 
-    private void  updateClock() {
+    //TODO create a timeout task and tie to activity timer
+    private void startActivityTimer () {
+      activityTimer = new Timer();
+      activityTimerStart = System.currentTimeMillis();
+      clockTimer = new Timer();
+      clockTimer.schedule(new ClockTimerTask(), 0, 100);
+    }
+
+    private class ClockTimerTask extends TimerTask {
+
+      @Override
+      public void run() {
+        runOnUiThread(() -> MainActivity.this.updateClock());
+      }
+
+    }
+
+    private void updateClock () {
       timeLimit = preferences.getInt("timer", 15);
       long remaining = (timeLimit * 60000) - (System.currentTimeMillis() - activityTimerStart);
       int minutes;
       double seconds;
 
       if (remaining > 0) {
-        minutes = (int) (remaining/60000);
+        minutes = (int) (remaining / 60000);
         seconds = (remaining % 60000) / 1000.0;
-    } else {
+      } else {
         minutes = timeLimit;
         seconds = 0;
       }
       clockDisplay.setText(String.format(clockFormat, minutes, seconds));
+    }
+
+  private class MyPagerAdapter extends FragmentStatePagerAdapter {
+
+    public MyPagerAdapter(FragmentManager fm) {
+      super(fm);
+    }
+
+
+    //TODO Make the fragment end switch work.
+    @Override
+    public Fragment getItem(int pos) {
+      switch (pos) {
+        case 0:
+          return TaskFragment.newInstance("Get dressed.");
+        case 1:
+          return TaskFragment.newInstance("Brush your teeth.");
+        case 2:
+          return TaskFragment.newInstance("Make your bed.");
+        case 3:
+          return TaskFragment.newInstance("Put your shoes on.");
+        case 4:
+          return TaskFragment.newInstance("Get your backpack ready.");
+        case 5:
+          return CompleteFragment.newInstance((Long.toString(activityTimeElapsed)));
+        default:
+          return TaskFragment.newInstance("Good morning!");
+      }
+    }
+
+    @Override
+    public int getCount() {
+      return NUM_PAGES;
+    }
   }
 
+  public Timer getActivityTimer() {
+    return activityTimer;
+  }
+
+  public Timer getClockTimer() {
+    return clockTimer;
+  }
+
+  public long getActivityTimeElapsed() {
+    return activityTimeElapsed;
+  }
 }

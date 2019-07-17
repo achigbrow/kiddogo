@@ -1,8 +1,3 @@
-##Visual Representation of Data Model
-![relationships](erd4.png)
-[Relationships PDF Link](erd4.pdf)
-##DDL for Data Model
-```sqlite
 CREATE TABLE IF NOT EXISTS `ActivityEntity`
 (
     `activity_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -20,6 +15,3 @@ CREATE TABLE IF NOT EXISTS `UserEntity`
     `user_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     `name`    TEXT
 );
-```
-
-

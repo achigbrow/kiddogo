@@ -1,0 +1,1 @@
+-bootclasspath "C:\Program Files\Java\jdk1.8.0_212\jre\lib\rt.jar";C:\android\sdk\platforms\android-21\android.jar -link https://docs.oracle.com/javase/8/docs/api -linkoffline https://developer.android.com/reference/ "C:\Users\Mike PC\Desktop\bootcamp\projects\kiddogo" -link https://square.github.io/retrofit/2.x/retrofit/

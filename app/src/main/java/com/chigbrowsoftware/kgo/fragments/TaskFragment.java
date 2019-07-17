@@ -1,6 +1,7 @@
 package com.chigbrowsoftware.kgo.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,21 +10,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import com.chigbrowsoftware.kgo.R;
-import com.chigbrowsoftware.kgo.controller.MainActivity;
+import com.chigbrowsoftware.kgo.MainActivity;
+import com.chigbrowsoftware.kgo.controller.ResultsActivity;
 import java.util.Timer;
 
 public class TaskFragment extends Fragment {
 
   Button button1;
-  public static int done = 0;
-
-  private Timer activityTimer;
-  private Timer clockTimer;
-
-  private MainActivity activity;
-  private CompleteFragment completeFragment;
-
-  private long activityTimeElapsed;
+  public static int done;
+  int total = MainActivity.NUM_PAGES;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,13 +30,12 @@ public class TaskFragment extends Fragment {
 
     button1 = view.findViewById(R.id.button_1);
     button1.setOnClickListener(view1 -> {
-      if (done < 5) {
+      if (MainActivity.pager.getCurrentItem() < total - 1) {
         MainActivity.pager.setCurrentItem(getNextPossibleItemIndex(1), true);
-        done += 1;
-      }else if (done == 5) {
-        activityTimeElapsed = activity.getActivityTimeElapsed();
-        CompleteFragment.newInstance((Long.toString(activityTimeElapsed)));
-        activityComplete();
+        done = done + 1;
+      } else if (MainActivity.pager.getCurrentItem() == total - 1) {
+        Intent intent = new Intent(getContext(), ResultsActivity.class);
+        startActivity(intent);
       }
     });
     return view;
@@ -61,7 +55,6 @@ public class TaskFragment extends Fragment {
   private int getNextPossibleItemIndex (int change) {
 
     int currentIndex = MainActivity.pager.getCurrentItem();
-    int total = MainActivity.NUM_PAGES;
 
     if (currentIndex + change < 0) {
       return 0;
@@ -69,14 +62,6 @@ public class TaskFragment extends Fragment {
     return Math.abs((currentIndex + change) % total);
   }
 
-  public void activityComplete () {
-    if (done == 5) {
-      activityTimer = activity.getActivityTimer();
-      activity.stopActivityTimer();
-      clockTimer = activity.getClockTimer();
-      activity.stopClockTimer();
-    }
-  }
 
 
 

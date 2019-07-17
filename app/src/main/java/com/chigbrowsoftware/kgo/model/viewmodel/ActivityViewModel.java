@@ -4,8 +4,10 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import com.chigbrowsoftware.kgo.MainActivity;
 import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
 import com.chigbrowsoftware.kgo.model.entity.ActivityEntity;
+import java.util.Date;
 import java.util.List;
 
 public class ActivityViewModel extends AndroidViewModel {
@@ -25,6 +27,11 @@ public class ActivityViewModel extends AndroidViewModel {
   public void addActivity(final ActivityEntity activity) {
     new Thread((Runnable) () -> {
       ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
+//      ActivityEntity newActivity = new ActivityEntity();
+//      newActivity.setUser(MainActivity.userId);
+//      newActivity.setTimestamp(new Date());
+//      newActivity.setTime(MainActivity.activityTimeElapsed);
+//      newActivity.setResult(MainActivity.result());
       db.activityDao().insert(activity);
     }).start();
   }

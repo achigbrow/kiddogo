@@ -7,7 +7,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/colorWhite"
-  tools:context=".controller.MainActivity">
+  tools:context=".MainActivity">
 
   <TextView
     android:id="@+id/clock_display"
@@ -17,6 +17,8 @@
     app:layout_constraintEnd_toEndOf="parent"
     android:visibility="visible"
     style="@style/ClockDisplay"/>
+
+
 
   <androidx.viewpager.widget.ViewPager
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -41,6 +43,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center|center"
       android:visibility="visible"/>
+
   </FrameLayout>
 
   <com.google.android.material.bottomnavigation.BottomNavigationView

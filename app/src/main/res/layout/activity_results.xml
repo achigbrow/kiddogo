@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/container"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".controller.ResultsActivity">
+
+  <TextView
+    android:id="@+id/monday"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:layout_marginStart="10dp"
+    android:text="@string/monday"
+    android:textSize="50sp"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toTopOf="parent"/>
+
+  <ImageView
+    android:id="@+id/star1"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    app:srcCompat="@android:drawable/btn_star_big_on"
+    android:layout_marginTop="30dp"
+    android:layout_marginStart="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+    app:layout_constraintTop_toTopOf="parent"/>
+
+
+  <ImageView
+    android:id="@+id/x1"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    app:srcCompat="@android:drawable/ic_delete"
+    android:layout_marginTop="35dp"
+    android:layout_marginStart="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+    app:layout_constraintTop_toTopOf="parent"/>
+
+<!--  TODO Add box and lay x or star over it.-->
+
+  <TextView
+    android:id="@+id/tuesday"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="30dp"
+    android:text="@string/tuesday"
+    android:textSize="50sp"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/monday"/>
+
+  <ImageView
+    android:id="@+id/star2"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    app:srcCompat="@android:drawable/btn_star_big_on"
+    android:layout_marginTop="95dp"
+    android:layout_marginStart="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+    app:layout_constraintTop_toTopOf="@id/star1"/>
+
+  <ImageView
+    android:id="@+id/x2"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    app:srcCompat="@android:drawable/ic_delete"
+    android:layout_marginTop="95dp"
+    android:layout_marginStart="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+    app:layout_constraintTop_toTopOf="@id/x1"/>
+
+  <TextView
+    android:id="@+id/wednesday"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="30dp"
+    android:text="@string/wednesday"
+    android:textSize="50sp"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/tuesday"/>
+
+  <ImageView
+    android:id="@+id/star3"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    app:srcCompat="@android:drawable/btn_star_big_on"
+    android:layout_marginTop="95dp"
+    android:layout_marginStart="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+    app:layout_constraintTop_toTopOf="@id/star2"/>
+
+  <ImageView
+    android:id="@+id/x3"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    app:srcCompat="@android:drawable/ic_delete"
+    android:layout_marginTop="95dp"
+    android:layout_marginStart="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+    app:layout_constraintTop_toTopOf="@id/x2"/>
+
+  <TextView
+    android:id="@+id/thursday"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:layout_marginStart="10dp"
+    android:text="@string/thursday"
+    android:textSize="50sp"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/wednesday"/>
+
+  <ImageView
+    android:id="@+id/star4"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    app:srcCompat="@android:drawable/btn_star_big_on"
+    android:layout_marginTop="95dp"
+    android:layout_marginStart="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+    app:layout_constraintTop_toTopOf="@id/star3"/>
+
+  <ImageView
+    android:id="@+id/x4"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    app:srcCompat="@android:drawable/ic_delete"
+    android:layout_marginTop="95dp"
+    android:layout_marginStart="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+    app:layout_constraintTop_toTopOf="@id/x3"/>
+
+
+  <TextView
+    android:id="@+id/friday"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:layout_marginStart="10dp"
+    android:text="@string/friday"
+    android:textSize="50sp"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/thursday"/>
+
+  <ImageView
+    android:id="@+id/star5"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    app:srcCompat="@android:drawable/btn_star_big_on"
+    android:layout_marginTop="95dp"
+    android:layout_marginStart="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+    app:layout_constraintTop_toTopOf="@id/star4"/>
+
+  <ImageView
+    android:id="@+id/x5"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    app:srcCompat="@android:drawable/ic_delete"
+    android:layout_marginTop="95dp"
+    android:layout_marginStart="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+    app:layout_constraintTop_toTopOf="@id/x4"/>
+
+  <com.google.android.material.bottomnavigation.BottomNavigationView
+    android:id="@+id/navigation"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="0dp"
+    android:layout_marginEnd="0dp"
+    android:background="?android:attr/windowBackground"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:menu="@menu/navigation"/>
+
+  <androidx.constraintlayout.widget.Guideline
+    android:id="@+id/vertical_guideline"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_constraintGuide_percent="0.7"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

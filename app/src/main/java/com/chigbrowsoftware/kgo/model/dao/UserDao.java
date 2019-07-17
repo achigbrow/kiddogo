@@ -21,7 +21,10 @@ public interface UserDao {
   LiveData<UserEntity> findById(Long id);
 
   @Query("SELECT * FROM UserEntity ORDER BY user_id desc LIMIT 1")
-  LiveData<UserEntity> getLastUser();
+  UserEntity getLastUser();
+
+  @Query("SELECT * FROM UserEntity ORDER BY user_id desc LIMIT 1")
+  LiveData<UserEntity> getButtonLastUser();
 
   @Delete
   int delete(UserEntity... user);

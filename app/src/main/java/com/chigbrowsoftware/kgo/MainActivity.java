@@ -1,60 +1,52 @@
-package com.chigbrowsoftware.kgo.controller;
+package com.chigbrowsoftware.kgo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
-import com.chigbrowsoftware.kgo.R;
-import com.chigbrowsoftware.kgo.fragments.CompleteFragment;
+import com.chigbrowsoftware.kgo.controller.ResultsActivity;
+import com.chigbrowsoftware.kgo.controller.SettingsActivity;
 import com.chigbrowsoftware.kgo.fragments.TaskFragment;
-import com.chigbrowsoftware.kgo.model.Activity;
-import com.chigbrowsoftware.kgo.model.entity.UserEntity;
 import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
+import com.chigbrowsoftware.kgo.model.entity.ActivityEntity;
+import com.chigbrowsoftware.kgo.model.entity.UserEntity;
 import com.chigbrowsoftware.kgo.model.viewmodel.UserViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.widget.TextView;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
 
 
+  public final static int NUM_PAGES = 6;
+  public static long activityTimeElapsed;
+  public static androidx.viewpager.widget.ViewPager pager;
+  private static int timeLimit;
+  private static TextView clockDisplay;
+  public long userId;
   private Button btn;
-
   private TextView mTextMessage;
   private SharedPreferences preferences;
-  private int timeLimit;
   private UserEntity user;
-  private long userId;
-  private Activity activity;
-
-
-  private static TextView clockDisplay;
   private Timer activityTimer;
   private Timer clockTimer;
   private String activityTimeElapsedKey;
   private String clockFormat;
+  private String completeTime;
   private long activityTimerStart;
-  private long activityTimeElapsed;
-
-  public final static int NUM_PAGES = 5;
-  public static androidx.viewpager.widget.ViewPager pager;
-
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
       = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -69,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
           startActivity(intent);
           return true;
         case R.id.navigation_dashboard:
-          mTextMessage.setText(R.string.title_dashboard);
+          intent = new Intent(getApplicationContext(), ResultsActivity.class);
+          startActivity(intent);
           return true;
         case R.id.navigation_settings:
           intent = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -79,6 +72,14 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
       return handled;
     }
   };
+
+  public static boolean result() {
+    if (activityTimeElapsed <= timeLimit * 60000) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -101,10 +102,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   }
 
   private void readSettings() {
-    Resources res = getResources();
     String userName = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
         .getString("username", "default username");
-    //userName = preferences.getString("username", "username");
     timeLimit = preferences.getInt("timer", 15);
     UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
     user = new UserEntity();
@@ -114,22 +113,16 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     btn.setText(user.getName());
   }
 
-
   //TODO Build the ability to create 4 buttons of different colors for up to 4 users added.
   //TODO Tie the button opened activity to the user.
   private void buildButton(UserEntity user) {
     if (user != null) {
       btn = findViewById(R.id.button);
-      btn.setOnClickListener(new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-         // setContentView(R.layout.activity_main);
-          btn.setVisibility(View.INVISIBLE);
-          pager = findViewById(R.id.viewPager);
-          pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
-          initActivity();
-        }
-
+      btn.setOnClickListener(v -> {
+        btn.setVisibility(View.INVISIBLE);
+        pager = findViewById(R.id.viewPager);
+        pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        initActivity();
       });
       btn.setText(user.getName());
     }
@@ -143,58 +136,90 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     }
   }
 
-  public void stopClockTimer(){
+  public void stopClockTimer() {
     if (clockTimer != null) {
       clockTimer.cancel();
       clockTimer = null;
     }
   }
 
-    private LiveData<UserEntity> getUser () {
+  public void activityComplete() {
+    stopClockTimer();
+    stopActivityTimer();
+    completeTime();
+    addActivity();
+  }
+
+  private LiveData<UserEntity> getUser() {
+    ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
+    return db.userDao().getButtonLastUser();
+  }
+
+  private void initActivity() {
+    activityTimeElapsed = 0;
+    activityTimerStart = System.currentTimeMillis();
+    startActivityTimer();
+    updateClock();
+  }
+
+  //TODO create a timeout task and tie to activity timer
+  private void startActivityTimer() {
+    activityTimer = new Timer();
+    activityTimerStart = System.currentTimeMillis();
+    clockTimer = new Timer();
+    clockTimer.schedule(new ClockTimerTask(), 0, 100);
+  }
+
+  private void updateClock() {
+    timeLimit = preferences.getInt("timer", 15);
+    long remaining = (timeLimit * 60000) - (System.currentTimeMillis() - activityTimerStart);
+    int minutes;
+    double seconds;
+
+    if (remaining > 0) {
+      minutes = (int) (remaining / 60000);
+      seconds = (remaining % 60000) / 1000.0;
+    } else {
+      minutes = timeLimit;
+      seconds = 0;
+    }
+    clockDisplay.setText(String.format(clockFormat, minutes, seconds));
+  }
+
+  public String completeTime() {
+    long minutes = activityTimeElapsed / 60000;
+    long seconds = (activityTimeElapsed % 60000) / 1000;
+
+    StringBuilder bldr = new StringBuilder();
+
+    bldr.append(minutes).append(" min & ")
+        .append(seconds).append(" sec");
+    completeTime = bldr.toString();
+
+    return completeTime;
+  }
+
+  public void addActivity() {
+    new Thread(() -> {
       ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
-      return db.userDao().getLastUser();
+      UserEntity user1 = db.userDao().getLastUser();
+      ActivityEntity newActivity = new ActivityEntity();
+      newActivity.setUser(user1.getId());
+      newActivity.setTimestamp(new Date());
+      newActivity.setTime(activityTimeElapsed);
+      newActivity.setResult(result());
+      db.activityDao().insert(newActivity);
+    }).start();
+  }
+
+  private class ClockTimerTask extends TimerTask {
+
+    @Override
+    public void run() {
+      runOnUiThread(() -> MainActivity.this.updateClock());
     }
 
-    private void initActivity () {
-      activity = new Activity(userId, timeLimit);
-      activityTimeElapsed = 0;
-      activityTimerStart = System.currentTimeMillis();
-      startActivityTimer();
-      updateClock();
-    }
-
-    //TODO create a timeout task and tie to activity timer
-    private void startActivityTimer () {
-      activityTimer = new Timer();
-      activityTimerStart = System.currentTimeMillis();
-      clockTimer = new Timer();
-      clockTimer.schedule(new ClockTimerTask(), 0, 100);
-    }
-
-    private class ClockTimerTask extends TimerTask {
-
-      @Override
-      public void run() {
-        runOnUiThread(() -> MainActivity.this.updateClock());
-      }
-
-    }
-
-    private void updateClock () {
-      timeLimit = preferences.getInt("timer", 15);
-      long remaining = (timeLimit * 60000) - (System.currentTimeMillis() - activityTimerStart);
-      int minutes;
-      double seconds;
-
-      if (remaining > 0) {
-        minutes = (int) (remaining / 60000);
-        seconds = (remaining % 60000) / 1000.0;
-      } else {
-        minutes = timeLimit;
-        seconds = 0;
-      }
-      clockDisplay.setText(String.format(clockFormat, minutes, seconds));
-    }
+  }
 
   private class MyPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -218,7 +243,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         case 4:
           return TaskFragment.newInstance("Get your backpack ready.");
         case 5:
-          return CompleteFragment.newInstance((Long.toString(activityTimeElapsed)));
+          activityComplete();
+          return TaskFragment.newInstance(completeTime);
         default:
           return TaskFragment.newInstance("Good morning!");
       }
@@ -228,17 +254,5 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     public int getCount() {
       return NUM_PAGES;
     }
-  }
-
-  public Timer getActivityTimer() {
-    return activityTimer;
-  }
-
-  public Timer getClockTimer() {
-    return clockTimer;
-  }
-
-  public long getActivityTimeElapsed() {
-    return activityTimeElapsed;
   }
 }

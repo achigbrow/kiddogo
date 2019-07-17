@@ -11,20 +11,18 @@
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
     <activity
+      android:label="@string/title_activity_results_acivity"
+      android:name=".controller.ResultsActivity">
+    </activity>
+    <activity
       android:label="@string/app_name"
-      android:name=".controller.MainActivity">
+      android:name=".MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-    <activity
-      android:name=".controller.ViewPagerActivity"
-      android:label="@string/title_activity_screen_pager"/>
-    <activity
-      android:label="Settings"
-      android:name=".controller.SettingsActivity"/>
   </application>
 
 </manifest>

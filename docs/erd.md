@@ -1,7 +1,9 @@
-##Visual Representation of Data Model
+## Visual Representation of Data Model
+
 ![relationships](erd4.png)
 [Relationships PDF Link](erd4.pdf)
-##DDL for Data Model
+
+## DDL for Data Model
 ```sqlite
 CREATE TABLE IF NOT EXISTS `ActivityEntity`
 (

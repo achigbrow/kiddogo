@@ -35,6 +35,7 @@ public class TaskFragment extends Fragment {
         done = done + 1;
       } else if (MainActivity.pager.getCurrentItem() == total - 1) {
         Intent intent = new Intent(getContext(), ResultsActivity.class);
+        intent.putExtra("caller", "TaskFragment");
         startActivity(intent);
       }
     });

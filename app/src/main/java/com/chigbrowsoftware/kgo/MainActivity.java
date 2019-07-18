@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   private String clockFormat;
   private String completeTime;
   private long activityTimerStart;
+  private boolean inActivity;
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
       = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -61,8 +62,11 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
           startActivity(intent);
           return true;
         case R.id.navigation_dashboard:
-          intent = new Intent(getApplicationContext(), ResultsActivity.class);
-          startActivity(intent);
+          if (!inActivity){
+            intent = new Intent(getApplicationContext(), ResultsActivity.class);
+            intent.putExtra("caller", "MainActivity");
+            startActivity(intent);
+          }
           return true;
         case R.id.navigation_settings:
           intent = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -120,8 +124,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
       btn = findViewById(R.id.button);
       btn.setOnClickListener(v -> {
         btn.setVisibility(View.INVISIBLE);
+        inActivity = true;
         pager = findViewById(R.id.viewPager);
         pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        findViewById(R.id.navigation_dashboard).setVisibility(View.INVISIBLE);
         initActivity();
       });
       btn.setText(user.getName());

@@ -1,4 +1,4 @@
-package com.chigbrowsoftware.kgo;
+package com.chigbrowsoftware.kgo.controller;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,8 +16,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
-import com.chigbrowsoftware.kgo.controller.ResultsActivity;
-import com.chigbrowsoftware.kgo.controller.SettingsActivity;
+import com.chigbrowsoftware.kgo.R;
 import com.chigbrowsoftware.kgo.fragments.TaskFragment;
 import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
 import com.chigbrowsoftware.kgo.model.entity.ActivityEntity;
@@ -32,18 +31,16 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
 
   public final static int NUM_PAGES = 6;
-  public static long activityTimeElapsed;
+  private static long activityTimeElapsed;
   public static androidx.viewpager.widget.ViewPager pager;
   private static int timeLimit;
-  private static TextView clockDisplay;
-  public long userId;
+  private TextView clockDisplay;
+  private long userId;
   private Button btn;
   private TextView mTextMessage;
   private SharedPreferences preferences;
-  private UserEntity user;
   private Timer activityTimer;
   private Timer clockTimer;
-  private String activityTimeElapsedKey;
   private String clockFormat;
   private String completeTime;
   private long activityTimerStart;
@@ -94,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     mTextMessage = findViewById(R.id.message);
     preferences = PreferenceManager.getDefaultSharedPreferences(this);
     preferences.registerOnSharedPreferenceChangeListener(this);
-    activityTimeElapsedKey = getString(R.string.activity_time_elapsed_key);
     clockFormat = getString(R.string.clock_format);
     BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -110,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         .getString("username", "default username");
     timeLimit = preferences.getInt("timer", 15);
     UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-    user = new UserEntity();
+    UserEntity user = new UserEntity();
     user.setName(userName);
     userViewModel.addUser(user);
     userId = user.getId();

@@ -7,12 +7,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-import com.chigbrowsoftware.kgo.MainActivity;
 import com.chigbrowsoftware.kgo.model.entity.ActivityEntity;
 import com.chigbrowsoftware.kgo.model.entity.UserEntity;
 import com.chigbrowsoftware.kgo.model.dao.ActivityDao;
 import com.chigbrowsoftware.kgo.model.dao.UserDao;
-import java.util.Date;
 
 @Database(entities = {ActivityEntity.class, UserEntity.class}, version = 1)
 public abstract class ActivitiesDatabase extends RoomDatabase {

@@ -4,10 +4,8 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import com.chigbrowsoftware.kgo.MainActivity;
 import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
 import com.chigbrowsoftware.kgo.model.entity.ActivityEntity;
-import java.util.Date;
 import java.util.List;
 
 public class ActivityViewModel extends AndroidViewModel {

@@ -10,9 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import com.chigbrowsoftware.kgo.R;
-import com.chigbrowsoftware.kgo.MainActivity;
+import com.chigbrowsoftware.kgo.controller.MainActivity;
 import com.chigbrowsoftware.kgo.controller.ResultsActivity;
-import java.util.Timer;
 
 public class TaskFragment extends Fragment {
 

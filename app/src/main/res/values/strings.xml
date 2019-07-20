@@ -25,5 +25,6 @@
   <string name="settings_activity_title">Settings</string>
   <string name="star">Gold Star</string>
   <string name="x">Red X</string>
+  <string name="authentication_error">Authentication Error</string>
 
 </resources>

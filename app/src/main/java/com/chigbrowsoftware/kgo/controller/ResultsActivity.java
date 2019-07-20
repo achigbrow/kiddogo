@@ -118,10 +118,9 @@ public class ResultsActivity extends AppCompatActivity {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-
-    if (isCompleteView) {
+    getDay();
+    if (isCompleteView && !day.equals("Saturday") && !day.equals("Sunday") ) {
       hideDays();
-      getDay();
 
       if (result) {
 
@@ -222,7 +221,8 @@ public class ResultsActivity extends AppCompatActivity {
             setFri();
         }
       }
-    } else if (!isCompleteView) {
+    } else if (day.equals("Saturday") || day.equals("Sunday")
+    || !isCompleteView) {
       setMon();
       setTue();
       setWed();

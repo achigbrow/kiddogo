@@ -1,14 +1,22 @@
 package com.chigbrowsoftware.kgo.controller;
 
+import android.Manifest;
+import android.Manifest.permission;
+import android.accounts.AccountManager;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -22,15 +30,43 @@ import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
 import com.chigbrowsoftware.kgo.model.entity.ActivityEntity;
 import com.chigbrowsoftware.kgo.model.entity.UserEntity;
 import com.chigbrowsoftware.kgo.model.viewmodel.UserViewModel;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiActivity;
+import com.google.android.gms.dynamic.IFragmentWrapper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.DateTime;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
+public class MainActivity extends AppCompatActivity
+    implements OnSharedPreferenceChangeListener,  EasyPermissions.PermissionCallbacks {
+
+  //TODO add logout
 
 
   public final static int NUM_PAGES = 6;
+  private static final int REQUEST_ACCOUNT_PICKER = 1000;
+  private static final int REQUEST_AUTHORIZATION = 1001;
+  private static final int REQUEST_GOOGLE_PLAY = 1002;
+  private static final int REQUEST_GET_ACCOUNTS_PERMISSION = 1003;
+  public static final String PREFERRED_ACCOUNT = "preferred_account";
   private static long activityTimeElapsed;
   public static androidx.viewpager.widget.ViewPager pager;
   private static int timeLimit;
@@ -45,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   private String completeTime;
   private long activityTimerStart;
   private boolean inActivity;
+  private GoogleAccountCredential credential;
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
       = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -75,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
   };
 
   public static boolean result() {
-    if (activityTimeElapsed <= timeLimit * 60000) {
+    if (activityTimeElapsed <= (timeLimit * 60000)) {
       return true;
     } else {
       return false;
@@ -94,6 +131,15 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     clockFormat = getString(R.string.clock_format);
     BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    credential = GoogleAccountCredential.usingOAuth2(MainActivity.this.getApplicationContext(),
+        Arrays.asList(new String[] {CalendarScopes.CALENDAR})).setBackOff(new ExponentialBackOff());
+    if (!isGooglePlayAvailable()) {
+      acquireGooglePlayServices();
+    } else if (credential.getSelectedAccountName() == null) {
+      chooseAccount();
+    } else {
+      new TestEventsTask().execute();
+    }
   }
 
   @Override
@@ -214,6 +260,48 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     }).start();
   }
 
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    switch (requestCode) {
+      case REQUEST_GOOGLE_PLAY :
+        if (resultCode != RESULT_OK) {
+          Toast.makeText(this, "This app requires Google Play services.", Toast.LENGTH_LONG).show();
+        } else {
+          new TestEventsTask().execute();
+        }
+        break;
+      case REQUEST_ACCOUNT_PICKER :
+        if ((requestCode == RESULT_OK) && (data != null) && (data.getExtras() != null)) {
+          String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+          if (accountName != null) {
+            SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(PREFERRED_ACCOUNT, accountName);
+            editor.apply();
+            credential.setSelectedAccountName(accountName);
+            new TestEventsTask().execute();
+          }
+        }
+        break;
+      case REQUEST_AUTHORIZATION :
+        if (resultCode == RESULT_OK) {
+          new TestEventsTask().execute();
+        }
+        break;
+    }
+  }
+
+  @Override
+  public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+  }
+
+  @Override
+  public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+  }
+
   private class ClockTimerTask extends TimerTask {
 
     @Override
@@ -255,6 +343,78 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     @Override
     public int getCount() {
       return NUM_PAGES;
+    }
+  }
+
+  private boolean isGooglePlayAvailable() {
+    GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
+    int connectionStatusCode = availability.isGooglePlayServicesAvailable(this);
+    return connectionStatusCode == ConnectionResult.SUCCESS;
+  }
+
+  private void acquireGooglePlayServices() {
+    GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
+    int connectionStatusCode = availability.isGooglePlayServicesAvailable(this);
+    if (availability.isUserResolvableError(connectionStatusCode)) {
+      Dialog dialog = availability.getErrorDialog(this, connectionStatusCode, REQUEST_GOOGLE_PLAY);
+      dialog.show();
+    }
+  }
+
+  //TODO update google play update
+
+  private void calendarTest(){
+
+  }
+
+  @AfterPermissionGranted(REQUEST_GET_ACCOUNTS_PERMISSION)
+  private void chooseAccount () {
+    if (EasyPermissions.hasPermissions(this, permission.GET_ACCOUNTS)) {
+      String accountName = getPreferences(Context.MODE_PRIVATE).getString(PREFERRED_ACCOUNT, null);
+      if (accountName != null) {
+        credential.setSelectedAccountName(accountName);
+        new TestEventsTask().execute();
+      } else {
+        startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+      }
+    } else {
+      EasyPermissions.requestPermissions(this, "This app needs to access your google account."
+      , REQUEST_GET_ACCOUNTS_PERMISSION, permission.GET_ACCOUNTS);
+    }
+
+  }
+
+  private class TestEventsTask extends AsyncTask<Void, Void, Void> {
+
+    private Calendar service;
+
+
+    public TestEventsTask() {
+      HttpTransport transport = AndroidHttp.newCompatibleTransport();
+      JsonFactory factory = JacksonFactory.getDefaultInstance();
+//      credential = GoogleAccountCredential.usingOAuth2(MainActivity.this.getApplicationContext(),
+//          Arrays.asList(new String[] {CalendarScopes.CALENDAR})).setBackOff(new ExponentialBackOff());
+      service = new Calendar.Builder(transport, factory, credential)
+      .setApplicationName("KiddoGo").build();
+    }
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+      try {
+        Event event = new Event();
+        EventDateTime start = new EventDateTime();
+        EventDateTime end = new EventDateTime();
+        start.setDateTime(new DateTime(System.currentTimeMillis()));
+        end.setDateTime(new DateTime(System.currentTimeMillis() + (1000 * 3600)));
+        event.setStart(start);
+        event.setEnd(end);
+        event.setSummary("Test");
+        service.events().insert("primary", event).execute();
+      } catch (Throwable e) {
+        e.printStackTrace();
+        cancel(true);
+      }
+      return null;
     }
   }
 }

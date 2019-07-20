@@ -16,13 +16,14 @@
   <string name="activity_time_elapsed_key">activity_time_elapsed</string>
 
   <string name="clock_format">%1$d:%2$04.1f</string>
-  <string name="title_activity_results_acivity">ResultsAcivity</string>
   <string name="monday">Monday</string>
   <string name="tuesday">Tuesday</string>
   <string name="thursday">Thursday</string>
   <string name="friday">Friday</string>
   <string name="wednesday">Wednesday</string>
-  <string name="results">title_activity_results_activity</string>
-  <string name="settings">title_activity_settings_activity</string>
+  <string name="results_activity_title">Results</string>
+  <string name="settings_activity_title">Settings</string>
+  <string name="star">Gold Star</string>
+  <string name="x">Red X</string>
 
 </resources>

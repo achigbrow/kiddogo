@@ -8,6 +8,54 @@
   android:layout_height="match_parent"
   tools:context=".controller.ResultsActivity">
 
+  <TextView
+    android:id="@+id/day"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+   android:layout_marginTop="150dp"
+    android:textSize="70sp"
+    android:visibility="invisible"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    />
+
+  <ImageView
+    android:id="@+id/complete_star"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    app:srcCompat="@android:drawable/btn_star_big_on"
+    android:layout_marginTop="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/day"
+    android:contentDescription="@string/star"/>
+
+
+  <ImageView
+    android:id="@+id/complete_x"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    app:srcCompat="@android:drawable/ic_delete"
+    android:layout_marginTop="20dp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/day"
+    android:contentDescription="@string/x"/>
+
+  <TextView
+    android:id="@+id/message"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    android:textSize="40sp"
+    android:visibility="invisible"
+    app:layout_constraintTop_toBottomOf="@id/complete_star"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    />
 
   <TextView
     android:id="@+id/monday"
@@ -29,7 +77,8 @@
     android:layout_marginStart="20dp"
     android:visibility="invisible"
     app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-    app:layout_constraintTop_toTopOf="parent"/>
+    app:layout_constraintTop_toTopOf="parent"
+    android:contentDescription="@string/star"/>
 
 
   <ImageView
@@ -41,7 +90,8 @@
     android:layout_marginStart="20dp"
     android:visibility="invisible"
     app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-    app:layout_constraintTop_toTopOf="parent"/>
+    app:layout_constraintTop_toTopOf="parent"
+    android:contentDescription="@string/x"/>
 
 <!--  TODO Add box and lay x or star over it.-->
 
@@ -65,7 +115,8 @@
     android:layout_marginStart="20dp"
     android:visibility="invisible"
     app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-    app:layout_constraintTop_toTopOf="@id/star1"/>
+    app:layout_constraintTop_toTopOf="@id/star1"
+    android:contentDescription="@string/star"/>
 
   <ImageView
     android:id="@+id/x2"
@@ -76,7 +127,8 @@
     android:layout_marginStart="20dp"
     android:visibility="invisible"
     app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-    app:layout_constraintTop_toTopOf="@id/x1"/>
+    app:layout_constraintTop_toTopOf="@id/x1"
+    android:contentDescription="@string/x"/>
 
   <TextView
     android:id="@+id/wednesday"
@@ -98,7 +150,8 @@
     android:layout_marginStart="20dp"
     android:visibility="invisible"
     app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-    app:layout_constraintTop_toTopOf="@id/star2"/>
+    app:layout_constraintTop_toTopOf="@id/star2"
+    android:contentDescription="@string/star"/>
 
   <ImageView
     android:id="@+id/x3"
@@ -109,7 +162,8 @@
     android:layout_marginStart="20dp"
     android:visibility="invisible"
     app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-    app:layout_constraintTop_toTopOf="@id/x2"/>
+    app:layout_constraintTop_toTopOf="@id/x2"
+    android:contentDescription="@string/x"/>
 
   <TextView
     android:id="@+id/thursday"
@@ -131,7 +185,8 @@
     android:layout_marginStart="20dp"
     android:visibility="invisible"
     app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-    app:layout_constraintTop_toTopOf="@id/star3"/>
+    app:layout_constraintTop_toTopOf="@id/star3"
+    android:contentDescription="@string/star"/>
 
   <ImageView
     android:id="@+id/x4"
@@ -142,7 +197,8 @@
     android:layout_marginStart="20dp"
     android:visibility="invisible"
     app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-    app:layout_constraintTop_toTopOf="@id/x3"/>
+    app:layout_constraintTop_toTopOf="@id/x3"
+    android:contentDescription="@string/x"/>
 
 
   <TextView
@@ -165,7 +221,8 @@
     android:layout_marginStart="20dp"
     android:visibility="invisible"
     app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-    app:layout_constraintTop_toTopOf="@id/star4"/>
+    app:layout_constraintTop_toTopOf="@id/star4"
+    android:contentDescription="@string/star"/>
 
   <ImageView
     android:id="@+id/x5"
@@ -176,7 +233,8 @@
     android:layout_marginStart="20dp"
     android:visibility="invisible"
     app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
-    app:layout_constraintTop_toTopOf="@id/x4"/>
+    app:layout_constraintTop_toTopOf="@id/x4"
+    android:contentDescription="@string/x"/>
 
   <com.google.android.material.bottomnavigation.BottomNavigationView
     android:id="@+id/navigation"

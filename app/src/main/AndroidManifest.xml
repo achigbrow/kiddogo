@@ -11,11 +11,11 @@
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
     <activity
-      android:label="@string/results"
+      android:label="@string/results_activity_title"
       android:name=".controller.ResultsActivity">
     </activity>
     <activity
-      android:label="@string/settings"
+      android:label="@string/settings_activity_title"
       android:name=".controller.SettingsActivity">
     </activity>
     <activity

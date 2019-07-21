@@ -37,6 +37,7 @@ import com.google.android.gms.dynamic.IFragmentWrapper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -137,8 +138,6 @@ public class MainActivity extends AppCompatActivity
       acquireGooglePlayServices();
     } else if (credential.getSelectedAccountName() == null) {
       chooseAccount();
-    } else {
-      new TestEventsTask().execute();
     }
   }
 
@@ -260,47 +259,6 @@ public class MainActivity extends AppCompatActivity
     }).start();
   }
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    switch (requestCode) {
-      case REQUEST_GOOGLE_PLAY :
-        if (resultCode != RESULT_OK) {
-          Toast.makeText(this, "This app requires Google Play services.", Toast.LENGTH_LONG).show();
-        } else {
-          new TestEventsTask().execute();
-        }
-        break;
-      case REQUEST_ACCOUNT_PICKER :
-        if ((requestCode == RESULT_OK) && (data != null) && (data.getExtras() != null)) {
-          String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-          if (accountName != null) {
-            SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(PREFERRED_ACCOUNT, accountName);
-            editor.apply();
-            credential.setSelectedAccountName(accountName);
-            new TestEventsTask().execute();
-          }
-        }
-        break;
-      case REQUEST_AUTHORIZATION :
-        if (resultCode == RESULT_OK) {
-          new TestEventsTask().execute();
-        }
-        break;
-    }
-  }
-
-  @Override
-  public void onPermissionsGranted(int requestCode, List<String> perms) {
-
-  }
-
-  @Override
-  public void onPermissionsDenied(int requestCode, List<String> perms) {
-
-  }
 
   private class ClockTimerTask extends TimerTask {
 
@@ -373,7 +331,6 @@ public class MainActivity extends AppCompatActivity
       String accountName = getPreferences(Context.MODE_PRIVATE).getString(PREFERRED_ACCOUNT, null);
       if (accountName != null) {
         credential.setSelectedAccountName(accountName);
-        new TestEventsTask().execute();
       } else {
         startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
       }
@@ -384,37 +341,78 @@ public class MainActivity extends AppCompatActivity
 
   }
 
-  private class TestEventsTask extends AsyncTask<Void, Void, Void> {
-
-    private Calendar service;
-
-
-    public TestEventsTask() {
-      HttpTransport transport = AndroidHttp.newCompatibleTransport();
-      JsonFactory factory = JacksonFactory.getDefaultInstance();
-//      credential = GoogleAccountCredential.usingOAuth2(MainActivity.this.getApplicationContext(),
-//          Arrays.asList(new String[] {CalendarScopes.CALENDAR})).setBackOff(new ExponentialBackOff());
-      service = new Calendar.Builder(transport, factory, credential)
-      .setApplicationName("KiddoGo").build();
-    }
+//  private class TestEventsTask extends AsyncTask<Void, Void, Void> {
+//
+//    private Calendar service;
+//
+//
+//    public TestEventsTask() {
+//      HttpTransport transport = AndroidHttp.newCompatibleTransport();
+//      JsonFactory factory = JacksonFactory.getDefaultInstance();
+////      credential = GoogleAccountCredential.usingOAuth2(MainActivity.this.getApplicationContext(),
+////          Arrays.asList(new String[] {CalendarScopes.CALENDAR})).setBackOff(new ExponentialBackOff());
+//      service = new Calendar.Builder(transport, factory, credential)
+//      .setApplicationName("KiddoGo").build();
+//    }
+//
+//    @Override
+//    protected Void doInBackground(Void... voids) {
+//      try {
+//        Event event = new Event();
+//        EventDateTime start = new EventDateTime();
+//        EventDateTime end = new EventDateTime();
+//        start.setDateTime(new DateTime(System.currentTimeMillis()));
+//        end.setDateTime(new DateTime(System.currentTimeMillis() + (1000 * 3600)));
+//        event.setStart(start);
+//        event.setEnd(end);
+//        event.setSummary("Test");
+//        service.events().insert("primary", event).execute();
+//      } catch (UserRecoverableAuthIOException f) {
+//        startActivityForResult(f.getIntent(), REQUEST_AUTHORIZATION);
+//      } catch (Throwable e) {
+//        e.printStackTrace();
+//        cancel(true);
+//      }
+//      return null;
+//    }
+//  }
 
     @Override
-    protected Void doInBackground(Void... voids) {
-      try {
-        Event event = new Event();
-        EventDateTime start = new EventDateTime();
-        EventDateTime end = new EventDateTime();
-        start.setDateTime(new DateTime(System.currentTimeMillis()));
-        end.setDateTime(new DateTime(System.currentTimeMillis() + (1000 * 3600)));
-        event.setStart(start);
-        event.setEnd(end);
-        event.setSummary("Test");
-        service.events().insert("primary", event).execute();
-      } catch (Throwable e) {
-        e.printStackTrace();
-        cancel(true);
-      }
-      return null;
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    switch (requestCode) {
+      case REQUEST_GOOGLE_PLAY :
+        if (resultCode != RESULT_OK) {
+          Toast.makeText(this, "This app requires Google Play services.", Toast.LENGTH_LONG).show();
+        }
+        break;
+      case REQUEST_ACCOUNT_PICKER :
+        if ((resultCode == RESULT_OK) && (data != null) && (data.getExtras() != null)) {
+          String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+          if (!accountName.equals(null)) {
+            SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(PREFERRED_ACCOUNT, accountName);
+            editor.apply();
+            credential.setSelectedAccountName(accountName);
+          }
+        }
+        break;
+      case REQUEST_AUTHORIZATION :
+        if (resultCode == RESULT_OK) {
+          //TODO What goes here?
+        }
+        break;
     }
+  }
+
+  @Override
+  public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+  }
+
+  @Override
+  public void onPermissionsDenied(int requestCode, List<String> perms) {
+
   }
 }

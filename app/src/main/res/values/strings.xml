@@ -26,5 +26,11 @@
   <string name="star">Gold Star</string>
   <string name="x">Red X</string>
   <string name="authentication_error">Authentication Error</string>
+  <string name="step1">Get dressed.</string>
+  <string name="step2">Brush your teeth.</string>
+  <string name="step3">Make your bed.</string>
+  <string name="step4">Put your shoes on.</string>
+  <string name="step5">Get your backpack ready.</string>
+  <string name="default_msg">Good morning!</string>
 
 </resources>

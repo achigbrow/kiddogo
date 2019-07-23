@@ -1,5 +1,4 @@
 com.chigbrowsoftware.kgo
-com.chigbrowsoftware.kgo.appviewmodel
 com.chigbrowsoftware.kgo.controller
 com.chigbrowsoftware.kgo.fragments
 com.chigbrowsoftware.kgo.model
@@ -7,3 +6,5 @@ com.chigbrowsoftware.kgo.model.dao
 com.chigbrowsoftware.kgo.model.database
 com.chigbrowsoftware.kgo.model.entity
 com.chigbrowsoftware.kgo.model.viewmodel
+com.chigbrowsoftware.kgo.service
+com.chigbrowsoftware.kgo.util

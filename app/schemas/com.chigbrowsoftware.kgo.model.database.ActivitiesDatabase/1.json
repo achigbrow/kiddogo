@@ -2,10 +2,10 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c524acaea7f7f8964fcdd0333d7cd815",
+    "identityHash": "f88f722e1f4cc25b5cfa45cee42a49a3",
     "entities": [
       {
-        "tableName": "ActivityEntity",
+        "tableName": "Activity",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`activity_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` INTEGER NOT NULL, `timestamp` INTEGER, `time` INTEGER NOT NULL, `result` INTEGER NOT NULL, FOREIGN KEY(`user_id`) REFERENCES `UserEntity`(`user_id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
@@ -47,12 +47,12 @@
         },
         "indices": [
           {
-            "name": "index_ActivityEntity_user_id",
+            "name": "index_Activity_user_id",
             "unique": false,
             "columnNames": [
               "user_id"
             ],
-            "createSql": "CREATE  INDEX `index_ActivityEntity_user_id` ON `${TABLE_NAME}` (`user_id`)"
+            "createSql": "CREATE  INDEX `index_Activity_user_id` ON `${TABLE_NAME}` (`user_id`)"
           }
         ],
         "foreignKeys": [
@@ -71,7 +71,7 @@
       },
       {
         "tableName": "UserEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -83,7 +83,7 @@
             "fieldPath": "name",
             "columnName": "name",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -99,7 +99,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c524acaea7f7f8964fcdd0333d7cd815')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f88f722e1f4cc25b5cfa45cee42a49a3')"
     ]
   }
 }

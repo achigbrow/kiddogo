@@ -8,20 +8,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import com.chigbrowsoftware.kgo.R;
 import com.chigbrowsoftware.kgo.model.database.ActivitiesDatabase;
-import com.chigbrowsoftware.kgo.model.entity.ActivityEntity;
+import com.chigbrowsoftware.kgo.model.entity.Activity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.widget.TextView;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
@@ -42,36 +42,36 @@ import java.util.Locale;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
+/**Displays a complete result upon activity completion, a weekly result page when accessed
+ * through dashboard, and sends a calendar event to the parent's Google calendar if the activity
+ * is completed on time.
+ */
 public class ResultsActivity extends AppCompatActivity
     implements EasyPermissions.PermissionCallbacks {
 
   //TODO Set daily view different from week view.
 
-  private TextView mTextMessage;
-  private TextView dayOfWeek;
-  private String caller;
-  private String day;
-
-  private boolean result;
-  private boolean isCompleteView;
-
-  private String succeed = "Great job!";
-  private String fail = "You can get it!";
-
-  private SharedPreferences preferences;
-  private SharedPreferences.Editor editor;
-
   private static final int REQUEST_ACCOUNT_PICKER = 1000;
   private static final int REQUEST_AUTHORIZATION = 1001;
   private static final int REQUEST_GOOGLE_PLAY = 1002;
   private static final int REQUEST_GET_ACCOUNTS_PERMISSION = 1003;
-  public static final String PREFERRED_ACCOUNT = "preferred_account";
+  private static final String PREFERRED_ACCOUNT = "preferred_account";
+  private TextView mTextMessage;
+  private TextView dayOfWeek;
+  private String caller;
+  private String day;
+  private boolean result;
+  private boolean isCompleteView;
+  private String succeed = "Great job!";
+  private String fail = "You can get it!";
+  private SharedPreferences preferences;
+  private SharedPreferences.Editor editor;
   private GoogleAccountCredential credential;
-
 
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
       = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+    /** Sets bottom navigation for Results Activity.*/
     @SuppressWarnings("SwitchStatementWithoutDefaultBranch")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -96,6 +96,9 @@ public class ResultsActivity extends AppCompatActivity
     }
   };
 
+  /**
+   * Creates Results Activity.
+   */
   //TODO Fix static view
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -123,15 +126,12 @@ public class ResultsActivity extends AppCompatActivity
     setResultsViews();
 
     credential = GoogleAccountCredential.usingOAuth2(ResultsActivity.this.getApplicationContext(),
-        Arrays.asList(new String[] {CalendarScopes.CALENDAR})).setBackOff(new ExponentialBackOff());
+        Arrays.asList(new String[]{CalendarScopes.CALENDAR})).setBackOff(new ExponentialBackOff());
     if (!isGooglePlayAvailable()) {
       acquireGooglePlayServices();
     } else if (credential.getSelectedAccountName() == null) {
       chooseAccount();
     }
-//    else {
-//      new SuccessEventsTask().execute();
-//    }
   }
 
   private boolean isCompleteView() {
@@ -153,7 +153,7 @@ public class ResultsActivity extends AppCompatActivity
     //TODO Use live data to do this.
     Thread t = new Thread(() -> {
       ActivitiesDatabase db = ActivitiesDatabase.getInstance(getApplication());
-      ActivityEntity activity = db.activityDao().getRecentActivity();
+      Activity activity = db.activityDao().getRecentActivity();
       this.result = activity.isResult();
     });
     t.start();
@@ -163,7 +163,7 @@ public class ResultsActivity extends AppCompatActivity
       e.printStackTrace();
     }
     getDay();
-    if (isCompleteView && !day.equals("Saturday") && !day.equals("Sunday") ) {
+    if (isCompleteView && !day.equals("Saturday") && !day.equals("Sunday")) {
       hideDays();
 
       if (result) {
@@ -267,7 +267,7 @@ public class ResultsActivity extends AppCompatActivity
         }
       }
     } else if (day.equals("Saturday") || day.equals("Sunday")
-    || !isCompleteView) {
+        || !isCompleteView) {
       new SuccessEventsTask().execute(); //TODO remove after testing
       setMon();
       setTue();
@@ -344,7 +344,7 @@ public class ResultsActivity extends AppCompatActivity
   private void setThu() {
     try {
       if (!preferences.getString("thu_result", null).equals(null)
-         && preferences.getString("thu_result", null).equals(succeed)) {
+          && preferences.getString("thu_result", null).equals(succeed)) {
         findViewById(R.id.star4).setVisibility(View.VISIBLE);
       } else if (preferences.getString("thu_result", null).equals(fail)) {
         findViewById(R.id.x4).setVisibility(View.VISIBLE);
@@ -373,7 +373,7 @@ public class ResultsActivity extends AppCompatActivity
     }
   }
 
-  private void completeSuccessView () {
+  private void completeSuccessView() {
     getDay();
     dayOfWeek = findViewById(R.id.day);
     dayOfWeek.setVisibility(View.VISIBLE);
@@ -384,7 +384,7 @@ public class ResultsActivity extends AppCompatActivity
     view.setText(succeed);
   }
 
-  private void completeFailView () {
+  private void completeFailView() {
     getDay();
     dayOfWeek = findViewById(R.id.day);
     dayOfWeek.setVisibility(View.VISIBLE);
@@ -395,7 +395,7 @@ public class ResultsActivity extends AppCompatActivity
     view.setText(fail);
   }
 
-  private void  hideDays() {
+  private void hideDays() {
     findViewById(R.id.monday).setVisibility(View.INVISIBLE);
     findViewById(R.id.tuesday).setVisibility(View.INVISIBLE);
     findViewById(R.id.wednesday).setVisibility(View.INVISIBLE);
@@ -419,7 +419,7 @@ public class ResultsActivity extends AppCompatActivity
   }
 
   @AfterPermissionGranted(REQUEST_GET_ACCOUNTS_PERMISSION)
-  private void chooseAccount () {
+  private void chooseAccount() {
     if (EasyPermissions.hasPermissions(this, permission.GET_ACCOUNTS)) {
       String accountName = getPreferences(Context.MODE_PRIVATE).getString(PREFERRED_ACCOUNT, null);
       if (accountName != null) {
@@ -435,11 +435,63 @@ public class ResultsActivity extends AppCompatActivity
 
   }
 
+  /**
+   * Provides switch statement to handle response from Google services.
+   */
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    switch (requestCode) {
+      case REQUEST_GOOGLE_PLAY:
+        if (resultCode != RESULT_OK) {
+          Toast.makeText(this, "This app requires Google Play services.", Toast.LENGTH_LONG).show();
+        } else {
+          new SuccessEventsTask().execute();
+        }
+        break;
+      case REQUEST_ACCOUNT_PICKER:
+        if ((resultCode == RESULT_OK) && (data != null) && (data.getExtras() != null)) {
+          String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+          if (!accountName.equals(null)) {
+            SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(PREFERRED_ACCOUNT, accountName);
+            editor.apply();
+            credential.setSelectedAccountName(accountName);
+            new SuccessEventsTask().execute();
+          }
+        }
+        break;
+      case REQUEST_AUTHORIZATION:
+        if (resultCode == RESULT_OK) {
+          new SuccessEventsTask().execute();
+        }
+        break;
+    }
+  }
+
+  /**
+   * Required override for implementing EasyPermissions.PermissionCallbacks.
+   */
+  @Override
+  public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+  }
+
+  /**
+   * Required override for implementing EasyPermissions.PermissionCallbacks.
+   */
+  @Override
+  public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+  }
+
+  //HACK This requires that the kid select the calendar to push the event to. Fix so that parent selects.
   private class SuccessEventsTask extends AsyncTask<Void, Void, Void> {
 
     private Calendar service;
 
-    public SuccessEventsTask() {
+    SuccessEventsTask() {
       HttpTransport transport = AndroidHttp.newCompatibleTransport();
       JsonFactory factory = JacksonFactory.getDefaultInstance();
 //      credential = GoogleAccountCredential.usingOAuth2(MainActivity.this.getApplicationContext(),
@@ -470,47 +522,19 @@ public class ResultsActivity extends AppCompatActivity
     }
   }
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    switch (requestCode) {
-      case REQUEST_GOOGLE_PLAY :
-        if (resultCode != RESULT_OK) {
-          Toast.makeText(this, "This app requires Google Play services.", Toast.LENGTH_LONG).show();
-        } else {
-          new SuccessEventsTask().execute();
-        }
-        break;
-      case REQUEST_ACCOUNT_PICKER :
-        if ((resultCode == RESULT_OK) && (data != null) && (data.getExtras() != null)) {
-          String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-          if (!accountName.equals(null)) {
-            SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(PREFERRED_ACCOUNT, accountName);
-            editor.apply();
-            credential.setSelectedAccountName(accountName);
-            new SuccessEventsTask().execute();
-          }
-        }
-        break;
-      case REQUEST_AUTHORIZATION :
-        if (resultCode == RESULT_OK) {
-          new SuccessEventsTask().execute();
-        }
-        break;
-    }
-  }
-
-  @Override
-  public void onPermissionsGranted(int requestCode, List<String> perms) {
-
-  }
-
-  @Override
-  public void onPermissionsDenied(int requestCode, List<String> perms) {
-
-  }
+  //  Copyright [2019] [Alana Chigbrow]
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 
 }
 
